@@ -1,0 +1,9 @@
+settings.json
+*.pyc
+*.sql
+*.sqlite
+*.sqlite3
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+**/venv/**
