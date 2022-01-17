@@ -1,7 +1,9 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 
 from account.models import User
-
 # Create your models here.
 
 class Currency(models.Model):
@@ -12,6 +14,13 @@ class Currency(models.Model):
     
     def __str__(self) -> str:
         return f"user:{self.user.username} currency:{self.code}"
+    
+    @staticmethod
+    def convert(amount, from_currency, to_currency):
+        if (from_currency.id == to_currency.id):
+            return amount
+        amount_in_dollars = amount / from_currency.rate
+        return round(amount_in_dollars * to_currency.rate, 2)
 
 
 class Pot(models.Model):
@@ -24,3 +33,27 @@ class Pot(models.Model):
 
     def __str__(self):
         return f"user:{self.user.username} pot:{self.name} amount:{self.amount}"
+
+
+# SIGNALS to create default currencies
+@receiver(post_save, sender=User)
+def create_default_currencies(sender, instance, created, **kwargs):
+    if created:
+        Currency.objects.create(
+            user=instance,
+            code="USD",
+            symbol="$",
+            rate=1
+        )
+        Currency.objects.create(
+            user=instance,
+            code="GBP",
+            symbol="£",
+            rate=0.73
+        )
+        Currency.objects.create(
+            user=instance,
+            code="EUR",
+            symbol="€",
+            rate=0.88
+        )

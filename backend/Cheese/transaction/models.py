@@ -1,10 +1,8 @@
-from datetime import date
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-
-from core.constants import Period
 
 from account.models import User
 from pot.models import Pot
@@ -15,20 +13,30 @@ class Transaction(models.Model):
     class Kind(models.TextChoices):
         INFLOW = "inflow"  
         OUTFLOW = "outflow" 
+    
+    class Period(models.TextChoices):
+        DAY = 'day'
+        WEEK = 'week'
+        MONTH = 'month'
+        YEAR = 'year'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, unique=False)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     pot = models.ForeignKey(Pot, on_delete=models.CASCADE, null=False, blank=False)
+    
     kind = models.CharField(_('Kind'), max_length=8, choices=Kind.choices, null=False)
     base_kind = Kind.INFLOW
 
     is_recurring = models.BooleanField(default=False) 
-    is_processed = models.BooleanField(default=False)
+    is_treated = models.BooleanField(default=False)
     is_transfer = models.BooleanField(default=False)
     
     start_date = models.DateField(default=date.today)
     treat_date = models.DateField(blank=True, null=True)
+
+    period = models.CharField(_('Period'), max_length=8, choices=Period.choices, null=True, blank=True)
+    period_count = models.IntegerField(null=True, blank=True, default=1)
 
     def __str__(self) -> str:
         return ("transaction:{self.title} amount:{self.amount} pot:{self.pot.id}")
@@ -37,6 +45,98 @@ class Transaction(models.Model):
         self.kind = self.base_kind
         super().save(*args, **kwargs)
 
+    def treat(self):
+        if self.is_recurring:
+            self.treat_recurring()
+        else:
+            self.treat_one_off()
+    
+    def treat_one_off(self):
+        if self.is_treated:
+            return
+        
+        today = date.today()
+        
+        if today < self.start_date:
+            return
+        else:
+            old_amount = self.pot.amount
+            if self.kind == self.Kind.INFLOW:
+                new_amount = old_amount + self.amount
+            else:
+                new_amount = old_amount - self.amount
+            # update pot
+            self.pot.amount = new_amount
+            self.pot.save()
+            # create record
+            Record.objects.create(
+                user = self.user,
+                pot = self.pot,
+                transaction = self,
+                old_amount = old_amount,
+                new_amount = new_amount,
+                date = self.start_date
+            )
+            # update self
+            self.is_treated = True
+            self.save()
+        
+
+    def treat_recurring(self):
+        today = datetime.today().date()
+        if not self.treat_date and self.start_date > today:
+            return        
+        if self.treat_date == today:
+            return
+        outstanding_dates = self.get_recurring_dates()
+        if len(outstanding_dates) == 0:
+            return
+
+        for date in outstanding_dates:
+            old_amount = self.pot.amount
+            if self.kind == self.Kind.INFLOW:
+                new_amount = old_amount + self.amount
+            else:
+                new_amount = old_amount - self.amount
+            
+            # update pot
+            self.pot.amount = new_amount
+            self.pot.save()
+            
+            # create record
+            Record.objects.create(
+                user = self.user,
+                pot = self.pot,
+                transaction = self,
+                old_amount = old_amount,
+                new_amount = new_amount,
+                date = date
+            )
+        # update self
+        self.treat_date = today
+        self.save()
+        
+    def get_recurring_dates(self):
+        dates = []
+        today = date.today()
+        time_increment = self.get_time_increment()
+        last_treat_date = self.treat_date if self.treat_date else self.start_date - time_increment
+        
+        while last_treat_date < today:
+            last_treat_date += time_increment
+            dates.append(last_treat_date)
+        return list(filter(lambda date: date <= today, dates))
+
+    def get_time_increment(self):
+        if self.period == self.Period.DAY:
+            return relativedelta(days=self.period_count)
+        elif self.period == self.Period.WEEK:
+            return relativedelta(weeks=self.period_count)
+        elif self.period == self.Period.MONTH:
+            return relativedelta(months=self.period_count)
+        elif self.period == self.Period.YEAR:
+            return relativedelta(years=self.period_count)
+    
 
 class InflowManager(models.Manager):
     def get_queryset(self, *args, **kwargs): 
