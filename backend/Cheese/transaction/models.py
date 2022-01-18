@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from collections import deque
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -67,9 +68,7 @@ class Transaction(models.Model):
                 new_amount = old_amount - self.amount
             # update pot
             self.pot.amount = new_amount
-            self.pot.save()
-            # create record
-            Record.objects.create(
+            record = Record.objects.create(
                 user = self.user,
                 pot = self.pot,
                 transaction = self,
@@ -77,10 +76,12 @@ class Transaction(models.Model):
                 new_amount = new_amount,
                 date = self.start_date
             )
+            self.pot.records.add(record)
+            self.pot.save()
+            
             # update self
             self.is_treated = True
-            self.save()
-        
+            self.save()     
 
     def treat_recurring(self):
         today = datetime.today().date()
@@ -101,10 +102,7 @@ class Transaction(models.Model):
             
             # update pot
             self.pot.amount = new_amount
-            self.pot.save()
-            
-            # create record
-            Record.objects.create(
+            record = Record.objects.create(
                 user = self.user,
                 pot = self.pot,
                 transaction = self,
@@ -112,6 +110,9 @@ class Transaction(models.Model):
                 new_amount = new_amount,
                 date = date
             )
+            self.pot.records.add(record)
+            self.pot.save()
+
         # update self
         self.treat_date = today
         self.save()
@@ -172,6 +173,55 @@ class Record(models.Model):
     def __str__(self):
         return f"user:{self.user.username} pot:{self.pot.id} transaction:{self.transaction.id} old:{self.old_amount} new:{self.new_amount} date:{self.date}"
 
+    @staticmethod
+    def fetch_pot_total_from(pot, from_date, granularity):
+        today = date.today()
+        records_deck = deque()
+        dates =[]
+        amounts =[]
+
+        if granularity == Transaction.Period.DAY:
+            while from_date <= today:
+                records = pot.records.all().filter(date=from_date)
+                records_deck.append(list(records))
+                dates.append(from_date)
+                from_date += relativedelta(days=1)
+            amounts = Record.get_amount_list_from_records_deck(records_deck, pot.amount)
+        
+        elif granularity == Transaction.Period.MONTH:
+            pass
+        elif granularity == Transaction.Period.YEAR:
+            pass
+                    
+        return {"dates": dates, "amounts": amounts}
+        
+    @staticmethod
+    def get_amount_list_from_records_deck(deck, last_amount):
+        """Given the most recent amount, it gets all the ending pot amounts in the deck containing record lists"""
+        amount_list = []
+        while len(deck) > 0:
+            amount_list.append(float(last_amount))
+            current_list = deck[-1]
+            last_amount = Record.get_oldest_amount_from_list(current_list, last_amount)
+            deck.pop()
+        del amount_list[-1]
+        amount_list.reverse()
+        return amount_list
+
+    @staticmethod
+    def get_oldest_amount_from_list(records, new_amount):
+        """Given the most recent amount in a record, this function recursively finds the oldest amount"""
+        if len(records) == 0:
+            return new_amount
+
+        elif len(records) == 1:
+            return records[0].old_amount
+        
+        else:
+            for index, record in enumerate(records):
+                if record.new_amount == new_amount:
+                    del records[index]
+                    return Record.get_oldest_amount_from_list(records, record.old_amount)
 
 
 class Transfer(models.Model):

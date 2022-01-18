@@ -1,3 +1,6 @@
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -33,6 +36,7 @@ class Pot(models.Model):
 
     def __str__(self):
         return f"user:{self.user.username} pot:{self.name} amount:{self.amount}"
+    
 
 
 # SIGNALS to create default currencies

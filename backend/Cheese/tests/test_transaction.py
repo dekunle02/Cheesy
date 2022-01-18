@@ -104,6 +104,25 @@ class TreatmentTestCase(TestCase):
             amount=200.00
         )
         return super().setUp()
+    
+    def test_record_created_appended_to_pot(self):
+        """Records created on successful treatment of transaction and appended to Pot"""
+        user = get_user_model().objects.get(username="samad")
+        pot = Pot.objects.get(name="SamplePot1")
+        yesterday = datetime.now() - timedelta(days=1)
+        inflow = Inflow.objects.create(
+            user=user,
+            title="Test",
+            amount=100,
+            pot=pot,
+            is_treated=False,
+            start_date=yesterday.date()
+        )
+        inflow.treat()
+        records = pot.records.all()
+        self.assertEquals(len(records), 1)
+        self.assertEquals(records[0].transaction.title, "Test")
+
 
     def test_one_off_transaction_already_treated(self):
         """Skips a one-off transaction if it was already treated"""
@@ -178,17 +197,7 @@ class TreatmentTestCase(TestCase):
         self.assertTrue(inflow.is_treated)
         self.assertEquals(pot.amount, 200.00)
         self.assertFalse(record[1])
-
-    """
-    one off: has been processed already, still in future, should be processed and now in past
-    when processed, generates a record
-    
-    recurring: has yet to reach start date,
-    has reached start date and some are due,
-    has a last process date and none is due
-    has a last process date and some are due
-    """
-
+        
     def test_recurring_yet_to_reach_start_date(self):
         """Recurring transaction not processed if start date is not yet reached"""
         user = get_user_model().objects.get(username="samad")
@@ -293,3 +302,5 @@ class TreatmentTestCase(TestCase):
         inflow.treat()
 
         self.assertEquals(pot.amount, 50)
+
+
