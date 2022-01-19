@@ -60,7 +60,7 @@ class SignInView(APIView):
             token = {'refresh': str(refresh), 'access': str(
                 refresh.access_token)}
             serializer = UserSerializer(user)
-            return Response(data={"message": "Sign In Successful", "token": token, "user": serializer.data}, status=status.HTTP_200_OK)
+            return Response(data={"message": "Sign In Successful", "token": token, "user": {'username': user.username, 'email': user.email, 'image_url': user.image_url}}, status=status.HTTP_200_OK)
         else:
             return Response(data={"message": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
 

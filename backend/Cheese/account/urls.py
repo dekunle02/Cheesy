@@ -2,8 +2,7 @@ from django.urls import path, include
 from django.shortcuts import render
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
 
-from . import views 
-from . import apps
+from . import views, apps
 
 app_name= apps.AccountConfig.name
 

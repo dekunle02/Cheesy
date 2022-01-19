@@ -34,7 +34,7 @@ class Pot(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     records = models.ManyToManyField(
         "transaction.Record", related_name="pot_records")
-    colorCode = models.IntegerField(default=1)
+    color_code = models.IntegerField(default=1)
 
     def __str__(self):
         return f"user:{self.user.username} pot:{self.name} amount:{self.amount}"
