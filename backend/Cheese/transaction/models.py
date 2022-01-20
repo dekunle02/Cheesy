@@ -211,7 +211,7 @@ class Record(models.Model):
             while from_date <= today:
                 records = pot.records.all().filter(date=from_date)
                 records_deck.append(list(records))
-                dates.append(from_date)
+                dates.append(from_date.day)
                 from_date += relativedelta(days=1)
             amounts = Record.get_amount_list_from_records_deck(
                 records_deck, pot.amount)
@@ -237,7 +237,6 @@ class Record(models.Model):
                 from_date += relativedelta(years=1)
             amounts = Record.get_amount_list_from_records_deck(
                 records_deck, pot.amount)
-
         return {"dates": dates, "amounts": amounts}
 
     @staticmethod

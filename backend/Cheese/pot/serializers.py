@@ -5,9 +5,9 @@ from .models import Pot, Currency
 class CurrencySerializer(ModelSerializer):
     class Meta:
         model = Currency
-        fields = ['code', 'symbol', 'rate']
+        fields = ['id', 'code', 'symbol', 'rate']
 
 class PotSerializer(ModelSerializer):
     class Meta:
         model = Pot
-        fields = ['name', 'currency', 'amount', 'color_code']
+        fields = ['id','name', 'currency', 'amount', 'color_code']
