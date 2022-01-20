@@ -281,3 +281,5 @@ class PotTest(APITestCase):
 
         self.assertEquals(expected_list_amounts, response.data['amounts'])
         self.assertEquals(expected_list_dates, response.data['dates'])
+
+

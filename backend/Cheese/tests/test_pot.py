@@ -128,13 +128,6 @@
 
 #         pass
 
-#     """
-#     day to day,
-#     multiple records in day,
-#     month to month,
-#     single day
-#     """
-
 #     def test_pot_gets_total_records_summaries_day(self):
 #         """Pot can be return pot amounts from particular dates for days"""
 #         user = get_user_model().objects.get(username="samad")

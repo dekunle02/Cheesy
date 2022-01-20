@@ -52,6 +52,15 @@ class Transaction(models.Model):
         super().save(*args, **kwargs)
 
     @staticmethod
+    def get_transaction_summary_net_from_list(transaction_list):
+        inflow_list = [transaction for transaction in transaction_list if transaction.kind == Transaction.Kind.INFLOW]
+        sum_inflow = sum([transaction.amount for transaction in inflow_list])
+        outflow_list = [transaction for transaction in transaction_list if transaction.kind == Transaction.Kind.OUTFLOW]
+        sum_outflow = sum([transaction.amount for transaction in outflow_list])
+        
+        return {'inflow': sum_inflow, 'outflow': sum_outflow, 'net': sum_inflow - sum_outflow}
+
+    @staticmethod
     def treat_list(transactions_list):
         transactions_list.sort(
             key=lambda transaction: transaction.defacto_last_date, reverse=False)
@@ -265,6 +274,46 @@ class Record(models.Model):
                     del records[index]
                     return Record.get_oldest_amount_from_list(records, record.old_amount)
 
+    @staticmethod
+    def fetch_record_total_from(user, from_date, granularity): 
+        """date: , record: in, out, net"""
+        records = Record.objects.all().filter(user=user)
+        today = date.today()
+        dates = []
+        summaries = []
+    
+        if granularity == Transaction.Period.DAY:
+            while from_date <= today:
+                date_records = records.filter(date=from_date)
+                date_transactions = [record.transaction for record in date_records]
+                transactions_summary = Transaction.get_transaction_summary_net_from_list(date_transactions)
+                dates.append(from_date)
+                summaries.append(transactions_summary)
+                from_date += relativedelta(days=1)
+                        
+        elif granularity == Transaction.Period.MONTH:
+            from_date = date(from_date.year, from_date.month, 1)
+            today = date(today.year, today.month, 1)
+            while from_date <= today:
+                date_records = records.filter(date__month=from_date.month,  date__year=from_date.year)
+                date_transactions = [record.transaction for record in date_records]
+                transactions_summary = Transaction.get_transaction_summary_net_from_list(date_transactions)
+                dates.append(from_date.month)
+                summaries.append(transactions_summary)
+                from_date += relativedelta(months=1)
+        elif granularity == Transaction.Period.YEAR:
+            from_date = date(from_date.year, from_date.month, 1)
+            today = date(today.year, today.month, 1)
+            while from_date <= today:
+                date_records = records.filter(date__year=from_date.year)
+                date_transactions = [record.transaction for record in date_records]
+                transactions_summary = Transaction.get_transaction_summary_net_from_list(date_transactions)
+                dates.append(from_date.year)
+                summaries.append(transactions_summary)
+                from_date += relativedelta(years=1)
+        return {"dates": dates, "summaries":summaries}
+
+        
 
 class Transfer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

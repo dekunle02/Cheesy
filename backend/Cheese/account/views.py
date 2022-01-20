@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from rest_framework import status
+from rest_framework import viewsets, status, mixins
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -63,6 +64,27 @@ class SignInView(APIView):
             return Response(data={"message": "Sign In Successful", "token": token, "user": {'username': user.username, 'email': user.email, 'image_url': user.image_url}}, status=status.HTTP_200_OK)
         else:
             return Response(data={"message": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    pass
+    # serializer_class = UserSerializer
+    
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     return User.objects.all().filter(id=user.id)
+
+    
+    # @action(detail=True, methods=['post'])
+    # def set_password(self, request, pk=None):
+    #     user = self.get_object()
+    #     try:
+    #         password: str = self.request.data["password"]
+    #         user.set_password(password)
+    #         user.save()
+    #         return Response({'status': 'password set'})
+    #     except Exception as e:
+    #         return Response(e.errors,
+    #                         status=status.HTTP_400_BAD_REQUEST)
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]

@@ -1,6 +1,5 @@
 from decimal import Decimal
 from datetime import date
-from turtle import color
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
@@ -27,7 +26,7 @@ class CurrencyViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         currency = Currency(user=request.user, **serializer.data)
         currency.save()
-        serializer = self.get_serializer(currency)
+        serializer = self.get_serializer(currency, many=False)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
     def partial_update(self, request, pk=None, *args, **kwargs):
