@@ -39,6 +39,25 @@ class Pot(models.Model):
     def __str__(self):
         return f"user:{self.user.username} pot:{self.name} amount:{self.amount}"
 
+    @staticmethod
+    def get_networth_for_user(user):
+        pots = Pot.objects.all().filter(user=user)
+        currencies = Currency.objects.all().filter(user=user)
+        networth = []
+        first_currency = currencies[0]
+        amounts = [Currency.convert(pot.amount, pot.currency, first_currency) for pot in pots]
+        total_amount = sum(amounts)
+        for currency in currencies:
+            amount_in_currency = Currency.convert(
+                total_amount, first_currency, currency)
+            networth.append(
+                {
+                    'currency': currency,
+                    'amount': amount_in_currency
+                }
+            )
+        return networth
+    
 
 # SIGNALS to create default currencies
 @receiver(post_save, sender=User)

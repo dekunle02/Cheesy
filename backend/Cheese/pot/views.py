@@ -48,26 +48,42 @@ class PotViewSet(viewsets.ModelViewSet):
         queryset = Pot.objects.all().filter(user=user)
         return queryset
 
-    @action(detail=False, methods=['get'], url_path="networth", name="networth")
+    @action(detail=False, methods=['get'], url_path="networth")
     def networth(self, request, *args, **kwargs):
+        networth_list = Pot.get_networth_for_user(request.user)
+        for networth_bundle in networth_list:
+            serialized_currency = CurrencySerializer(networth_bundle['currency'], many=False).data
+            networth_bundle['currency'] = serialized_currency
+        return Response(data=networth_list, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path="networthrange")
+    def networth_range(self, request, *args, **kwargs):
+        from_date = request.GET.get('from')
+        granularity = request.GET.get('granularity')
+
+        try:
+            from_date = string_to_date(from_date)
+        except:
+            return Response(data={"message": "Dates should be in ISO format. (yyyy-mm-dd)"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            if granularity not in (Transaction.Period.DAY, Transaction.Period.MONTH, Transaction.Period.YEAR):
+                raise Exception("Wrong Granularity")
+        except:
+           return Response(data={"message": "Granularity should be day, month, or year"}, status=status.HTTP_400_BAD_REQUEST)
+
         pots = self.get_queryset()
-        currencies = Currency.objects.all().filter(user=request.user)
-        networth = []
-        first_currency = currencies[0]
-        amounts = [Currency.convert(pot.amount, pot.currency, first_currency) for pot in pots]
-        total_amount = sum(amounts)
-        for currency in currencies:
-            amount_in_currency = Currency.convert(
-                total_amount, first_currency, currency)
-            networth.append(
-                {
-                    'currency': CurrencySerializer(currency, many=False).data,
-                    'amount': amount_in_currency
-                }
-            )
+        all_pots_ranges = [Record.fetch_pot_total_from(pot, from_date, granularity) for pot in pots]
 
-        return Response(data=networth, status=status.HTTP_200_OK)
+        amounts_super_list = [range_dictionary['amounts'] for range_dictionary in all_pots_ranges]
+        zipped_list = list(zip(*amounts_super_list))
+        amounts_list = [sum(tup) for tup in zipped_list]
+        dates_list = all_pots_ranges[0]['dates']
+        data = {"dates": dates_list,
+                "amounts": amounts_list}
+        return Response(data=data, status=status.HTTP_200_OK)
+        
 
+    
     @action(detail=True, methods=['get'], url_path="range")
     def record_range(self, request, pk=None, *args, **kwargs):
         from_date = request.GET.get('from')

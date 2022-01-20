@@ -81,12 +81,6 @@ class CurrenciesTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(currencies), 2)
 
-"""
-currencies = list, get, update, delete
-pot = list, get, update, delete
-networth = 'amount to currency'
-
-"""
   
 class PotTest(APITestCase):
     def setUp(self) -> None:
@@ -159,7 +153,6 @@ class PotTest(APITestCase):
         self.client.delete(url)
         self.assertEqual(len(Pot.objects.all()), 1)
     
-
     def test_pot_networth(self):
         """Networth is properly calulated and returned"""
         url = reverse('pot:pot-networth')
@@ -171,7 +164,6 @@ class PotTest(APITestCase):
         expected_usd_total = pot1.amount + Currency.convert(pot2.amount, pot2.currency, pot1.currency )
         self.assertEqual(response.data[0]['amount'], expected_usd_total)
 
-    
     def test_pot_balance_range(self):
         """Pot returns a range of amounts given a from and to date with granularity"""
         UserModel = get_user_model()
@@ -231,3 +223,61 @@ class PotTest(APITestCase):
         self.assertEquals(expected_list_amounts, response.data['amounts'])
         self.assertEquals(expected_list_dates, response.data['dates'])
          
+    def test_networth_range(self):
+        """Networth range can be gotten as pot balance range is also retreived"""
+        UserModel = get_user_model()
+        user = UserModel.objects.get(username='admin')
+        pot = Pot.objects.get(name="Pot1")
+        five_days_ago = (datetime.now() - timedelta(days=5)).date()
+        yesterday = (datetime.now() - timedelta(days=1)).date()
+        last_week = (datetime.now() - timedelta(days=7)).date()
+
+        transaction0 = Inflow.objects.create(
+            user=user,
+            title="Test",
+            amount=10,
+            pot=pot,
+            is_treated=False,
+            start_date=five_days_ago
+        )
+
+        transaction1 = Inflow.objects.create(
+            user=user,
+            title="Test",
+            amount=100,
+            pot=pot,
+            is_treated=False,
+            start_date=yesterday
+        )
+
+        transaction2 = Outflow.objects.create(
+            user=user,
+            title="Test2",
+            amount=50,
+            pot=pot,
+            is_treated=False,
+            start_date=yesterday
+        )
+
+        transaction3 = Inflow.objects.create(
+            user=user,
+            title="Test3",
+            amount=40,
+            pot=pot,
+            is_treated=False,
+            start_date=yesterday
+        )
+        Transaction.treat_list([transaction1, transaction0, transaction3, transaction2])
+
+        expected_list_amounts = [300, 300, 310, 310, 310, 310, 400, 400]
+        expected_list_dates = [13, 14, 15, 16, 17, 18, 19, 20]
+
+        url = reverse('pot:pot-networth-range')
+        range_data = {
+            "from": date_to_string(last_week),
+            "granularity": Transaction.Period.DAY
+        }
+        response = self.client.get(url, data=range_data)
+
+        self.assertEquals(expected_list_amounts, response.data['amounts'])
+        self.assertEquals(expected_list_dates, response.data['dates'])
