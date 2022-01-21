@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from re import I
 from dateutil.relativedelta import relativedelta
 from collections import deque
@@ -36,6 +36,7 @@ class Transaction(models.Model):
     is_recurring = models.BooleanField(default=False)
     is_treated = models.BooleanField(default=False)
     is_transfer = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     start_date = models.DateField(default=date.today)
     treat_date = models.DateField(blank=True, null=True)
@@ -48,8 +49,11 @@ class Transaction(models.Model):
         return ("transaction:{self.title} amount:{self.amount} pot:{self.pot.id}")
 
     def save(self, *args, **kwargs):
-        self.kind = self.base_kind
+        self.kind = self.kind if self.kind else self.base_kind
         super().save(*args, **kwargs)
+
+    def get_treatment_records_from(self, from_date):
+        return Record.objects.all().filter(user=self.user, date__gte=from_date)
 
     @staticmethod
     def get_transaction_summary_net_from_list(transaction_list):
@@ -78,6 +82,8 @@ class Transaction(models.Model):
             return self.start_date
 
     def treat(self):
+        if self.is_deleted:
+            return
         if self.is_recurring:
             self.treat_recurring()
         else:
@@ -312,7 +318,6 @@ class Record(models.Model):
                 summaries.append(transactions_summary)
                 from_date += relativedelta(years=1)
         return {"dates": dates, "summaries":summaries}
-
         
 
 class Transfer(models.Model):
@@ -323,7 +328,6 @@ class Transfer(models.Model):
     to_pot = models.ForeignKey(
         Pot, on_delete=models.CASCADE, related_name="transfer_to_pot")
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-
     is_recurring = models.BooleanField(default=False)
     start_date = models.DateField(default=date.today)
 

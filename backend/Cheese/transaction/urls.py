@@ -9,6 +9,8 @@ app_name= apps.TransactionConfig.name
 
 router = DefaultRouter()
 router.register(r'records', views.RecordViewSet, basename="record")
+router.register(r'transactions', views.TransactionViewSet, basename="transaction")
+router.register(r'transfers', views.TransferViewSet, basename="transfer")
 
 urlpatterns = [
     path('', include(router.urls))

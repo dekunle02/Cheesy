@@ -1,5 +1,5 @@
 from decimal import Decimal
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model

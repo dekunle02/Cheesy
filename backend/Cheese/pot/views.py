@@ -83,8 +83,6 @@ class PotViewSet(viewsets.ModelViewSet):
         data = {"dates": dates_list,
                 "amounts": amounts_list}
         return Response(data=data, status=status.HTTP_200_OK)
-        
-
     
     @action(detail=True, methods=['get'], url_path="range")
     def record_range(self, request, pk=None, *args, **kwargs):
@@ -105,7 +103,6 @@ class PotViewSet(viewsets.ModelViewSet):
         data = Record.fetch_pot_total_from(pot, from_date, granularity)
         
         return Response(data=data, status=status.HTTP_200_OK)
-
 
     def create(self, request, *args, **kwargs):
         name: str = self.request.data["name"]
@@ -131,7 +128,7 @@ class PotViewSet(viewsets.ModelViewSet):
                 name=name, 
                 amount=amount, 
                 currency=currency,
-                color_code = color_code
+                color_code=color_code
                 )
         except:
             return Response(data={"message": "Error: Pot not created"}, status=status.HTTP_400_BAD_REQUEST)

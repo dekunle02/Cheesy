@@ -1,5 +1,3 @@
-from ast import Delete
-from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 

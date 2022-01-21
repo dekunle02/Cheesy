@@ -80,7 +80,7 @@ class TransactionTestCase(TestCase):
 
         self.assertFalse(test_inflow[1])
         self.assertFalse(test_outflow[1])
-
+    
 
 class TreatmentTestCase(TestCase):
     def setUp(self) -> None:
