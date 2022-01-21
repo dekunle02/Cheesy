@@ -76,16 +76,60 @@ class AccountTest(APITestCase):
         UserModel = get_user_model()
         UserModel.objects.create_user(username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
 
+        login_data = {'username': 'admin', 'email':'admin@admin.com', 'password':'2@tW&AYhLXW7'}
+        login_url = reverse('account:signin')
+        response = self.client.post(login_url, login_data)
+        access_token = response.data['token']['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
+
         change_data = {"username":"admin2", "email":"admin2@admin.com"}
         change_url = reverse('account:user-detail', kwargs={'pk': 1})
         self.client.patch(change_url, change_data)
-        
+
         password_data = {"password": "2@tW&AYhLXW8"}
         password_url = reverse('account:user-set-password', kwargs={'pk': 1})
         self.client.post(password_url, password_data)
+
+        user = UserModel.objects.get(id=1)
+        self.assertEquals(user.username, 'admin2')
+        self.assertEquals(user.email, 'admin2@admin.com')
+        self.assertTrue(user.check_password("2@tW&AYhLXW8"))
+
+
+    def test_user_not_edit_another_user(self):
+        """User unable to edit another user details"""
+        UserModel = get_user_model()
+        UserModel.objects.create_user(username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
+        UserModel.objects.create_user(username='admin2', email='admin2@admin.com', password='2@tW&AYhLXW8')
+
+        login_data = {'username': 'admin', 'email':'admin@admin.com', 'password':'2@tW&AYhLXW7'}
+        login_url = reverse('account:signin')
+        response = self.client.post(login_url, login_data)
+        access_token = response.data['token']['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
+
+        change_data = {"username":"admin3"}
+        change_url = reverse('account:user-detail', kwargs={'pk': 2})
+        self.client.patch(change_url, change_data)
+
+        user2 = UserModel.objects.get(id=2)
+
+        self.assertEquals(user2.username, 'admin2')
+
+    def test_user_delete(self):
+        """User can delete their own account"""
+        UserModel = get_user_model()
+        UserModel.objects.create_user(username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
         
-        # self.assertEquals(user.username, 'admin2')
-        # self.assertEquals(user.email, 'admin2@admin.com')
-        # self.assertTrue(user.check_password("2@tW&AYhLXW8"))
+        login_data = {'username': 'admin', 'email':'admin@admin.com', 'password':'2@tW&AYhLXW7'}
+        login_url = reverse('account:signin')
+        response = self.client.post(login_url, login_data)
+        access_token = response.data['token']['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
 
+        delete_url = reverse('account:user-detail', kwargs={'pk': 1})
+        self.client.delete(delete_url)
 
+        users = UserModel.objects.all()
+
+        self.assertEquals(len(users), 0)

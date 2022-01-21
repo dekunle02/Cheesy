@@ -10,6 +10,7 @@ from core.helpers import date_to_string
 from pot.models import Pot, Currency
 from transaction.models import Transaction, Outflow, Inflow
 
+
 class CurrenciesTest(APITestCase):
     def setUp(self) -> None:
         UserModel = get_user_model()
@@ -171,7 +172,7 @@ class PotTest(APITestCase):
         pot = Pot.objects.get(name="Pot1")
         five_days_ago = (datetime.now() - timedelta(days=5)).date()
         yesterday = (datetime.now() - timedelta(days=1)).date()
-        last_week = (datetime.now() - timedelta(days=7)).date()
+        last_week = (datetime.now() - timedelta(days=7))
 
         transaction0 = Inflow.objects.create(
             user=user,
@@ -210,16 +211,19 @@ class PotTest(APITestCase):
         )
         Transaction.treat_list([transaction1, transaction0, transaction3, transaction2])
 
-        expected_list_amounts = [100, 100, 110, 110, 110, 110, 200, 200]
-        expected_list_dates = [13, 14, 15, 16, 17, 18, 19, 20]
-
         url = reverse('pot:pot-record-range', kwargs={'pk': 1})
         range_data = {
-            "from": date_to_string(last_week),
+            "from": date_to_string(last_week.date()),
             "granularity": Transaction.Period.DAY
         }
         response = self.client.get(url, data=range_data)
 
+        expected_list_amounts = [100, 100, 110, 110, 110, 110, 200, 200]
+        expected_list_dates = []
+        while last_week <= datetime.now():
+            expected_list_dates.append(last_week.day)
+            last_week += timedelta(days=1)
+        
         self.assertEquals(expected_list_amounts, response.data['amounts'])
         self.assertEquals(expected_list_dates, response.data['dates'])
          
@@ -230,7 +234,7 @@ class PotTest(APITestCase):
         pot = Pot.objects.get(name="Pot1")
         five_days_ago = (datetime.now() - timedelta(days=5)).date()
         yesterday = (datetime.now() - timedelta(days=1)).date()
-        last_week = (datetime.now() - timedelta(days=7)).date()
+        last_week = (datetime.now() - timedelta(days=7))
 
         transaction0 = Inflow.objects.create(
             user=user,
@@ -269,17 +273,18 @@ class PotTest(APITestCase):
         )
         Transaction.treat_list([transaction1, transaction0, transaction3, transaction2])
 
-        expected_list_amounts = [300, 300, 310, 310, 310, 310, 400, 400]
-        expected_list_dates = [13, 14, 15, 16, 17, 18, 19, 20]
-
         url = reverse('pot:pot-networth-range')
         range_data = {
-            "from": date_to_string(last_week),
+            "from": date_to_string(last_week.date()),
             "granularity": Transaction.Period.DAY
         }
         response = self.client.get(url, data=range_data)
 
+        expected_list_amounts = [300, 300, 310, 310, 310, 310, 400, 400]
+        expected_list_dates = []
+        while last_week <= datetime.now():
+            expected_list_dates.append(last_week.day)
+            last_week += timedelta(days=1)
+
         self.assertEquals(expected_list_amounts, response.data['amounts'])
         self.assertEquals(expected_list_dates, response.data['dates'])
-
-

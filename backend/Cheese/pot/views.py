@@ -33,9 +33,12 @@ class CurrencyViewSet(viewsets.ModelViewSet):
         currency_object = Currency.objects.get(id=pk)
         serializer = self.get_serializer(
             currency_object, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+        try: 
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+        except:
+          return Response(data={"message": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)  
 
 
 class PotViewSet(viewsets.ModelViewSet):

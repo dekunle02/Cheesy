@@ -1,3 +1,4 @@
+from ast import Delete
 from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -65,26 +66,40 @@ class SignInView(APIView):
         else:
             return Response(data={"message": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
 
-class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
-    pass
-    # serializer_class = UserSerializer
-    
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     return User.objects.all().filter(id=user.id)
+class UserViewSet(mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-    
-    # @action(detail=True, methods=['post'])
-    # def set_password(self, request, pk=None):
-    #     user = self.get_object()
-    #     try:
-    #         password: str = self.request.data["password"]
-    #         user.set_password(password)
-    #         user.save()
-    #         return Response({'status': 'password set'})
-    #     except Exception as e:
-    #         return Response(e.errors,
-    #                         status=status.HTTP_400_BAD_REQUEST)
+    def partial_update(self, request, pk=None):
+        user = self.request.user
+        try:
+            serializer = self.get_serializer(
+                user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(data={"message": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST) 
+        
+
+    @action(detail=True, methods=['post'])
+    def set_password(self, request, pk=None):
+        user = User.objects.get(id=pk)
+        try:
+            user.set_password(self.request.data["password"])
+            user.save()
+            return Response(data=self.get_serializer(user, many=False).data, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(data={"message": "Invalid parameters"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def destroy(self, request, pk=None):
+        user = self.request.user
+        user.delete()
+        return Response(data={"message": "User Account Deleted"}, status=status.HTTP_200_OK)
+        
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
