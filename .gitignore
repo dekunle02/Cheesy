@@ -1,6 +1,7 @@
 settings.json
 *.pyc
 *.sql
+*.env
 *.sqlite
 *.sqlite3
 **/migrations/**
