@@ -209,6 +209,8 @@ class PotTest(APITestCase):
             is_treated=False,
             start_date=yesterday
         )
+        
+
         Transaction.treat_list([transaction1, transaction0, transaction3, transaction2])
 
         url = reverse('pot:pot-record-range', kwargs={'pk': 1})
@@ -232,6 +234,7 @@ class PotTest(APITestCase):
         UserModel = get_user_model()
         user = UserModel.objects.get(username='admin')
         pot = Pot.objects.get(name="Pot1")
+        pot2 = Pot.objects.get(name="Pot2")
         five_days_ago = (datetime.now() - timedelta(days=5)).date()
         yesterday = (datetime.now() - timedelta(days=1)).date()
         last_week = (datetime.now() - timedelta(days=7))
@@ -271,7 +274,17 @@ class PotTest(APITestCase):
             is_treated=False,
             start_date=yesterday
         )
-        Transaction.treat_list([transaction1, transaction0, transaction3, transaction2])
+        
+        transaction4 = Inflow.objects.create(
+            user=user,
+            title="Test4",
+            amount=40,
+            pot=pot2,
+            is_treated=False,
+            start_date=yesterday
+        )
+
+        Transaction.treat_list([transaction1, transaction0, transaction3, transaction2, transaction4])
 
         url = reverse('pot:pot-networth-range')
         range_data = {
@@ -280,11 +293,16 @@ class PotTest(APITestCase):
         }
         response = self.client.get(url, data=range_data)
 
-        expected_list_amounts = [300, 300, 310, 310, 310, 310, 400, 400]
+        expected_list_amounts_for_pot1 = [100, 100, 110, 110, 110, 110, 200, 200]
+        expected_list_amounts_for_pot2 = Currency.convert_list([200, 200, 200, 200, 200, 200, 240, 240], pot2.currency, pot.currency)
+        expected_list_amounts = [sum(tup) for tup in zip(expected_list_amounts_for_pot1, expected_list_amounts_for_pot2)]
         expected_list_dates = []
+
         while last_week <= datetime.now():
             expected_list_dates.append(last_week.day)
             last_week += timedelta(days=1)
 
-        self.assertEquals(expected_list_amounts, response.data['amounts'])
-        self.assertEquals(expected_list_dates, response.data['dates'])
+        self.assertEquals(expected_list_amounts, response.data[0]['ranges']['amounts'])
+        self.assertEquals(expected_list_dates, response.data[0]['ranges']['dates'])
+
+         
