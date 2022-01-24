@@ -56,7 +56,7 @@ class Pot(models.Model):
     """
     @staticmethod
     def get_networth_for_user(user: User) -> list:
-        pots: Pot = Pot.objects.all().filter(user=user)
+        pots: QuerySet = Pot.objects.all().filter(user=user)
         currencies: QuerySet = Currency.objects.all().filter(user=user)
         networth: list = []
         first_currency: Currency = currencies[0]
