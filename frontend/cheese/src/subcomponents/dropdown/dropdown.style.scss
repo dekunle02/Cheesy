@@ -1,0 +1,54 @@
+@import "../../sass/colors";
+@import "../../sass/dimens";
+
+.dropdown-item {
+        padding: .2rem .5rem;
+        cursor: pointer;
+        font-size: 1.5rem;
+        margin: auto 0;
+
+        span{
+            display: flex;
+            align-items: center;
+        }
+    
+        &:hover{
+            color:$color-black;
+            border-left: solid $color-primary  .2rem;
+        }
+    
+        &.selected{
+            color:$color-black;
+            border: none;
+        }
+    
+}
+
+
+
+.dropdown-box{
+    display: inline-block;
+    padding: 1rem;
+    position: relative;
+
+    
+    .dropdown-selected-item-container{
+        border: 1px solid $color-grey;
+        border-radius: $small-border-radius;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+
+    }
+    
+    .dropdown-menu-items{
+        position: absolute;
+        width: 80%;
+        z-index:10;
+
+        &.hidden{
+            display: none;
+        }
+    }
+}
+
