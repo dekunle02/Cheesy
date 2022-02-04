@@ -1,0 +1,49 @@
+@import '../../sass/colors';
+@import '../../sass/dimens';
+
+
+.base-button {
+    background-color: $color-primary;
+    font-size: 1.5rem;
+    line-height: 2.5; 
+    border-radius: $small-border-radius;
+    border: solid 0.1rem $color-primary;
+    display: inline-block;
+    align-content: center;
+    color: $color-secondary;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: all .3s ease-in-out;
+    
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+}
+
+.outline-button {
+    color: rgba($color-primary, .8);
+    background-color: transparent;
+    box-shadow: none;
+
+    &:hover {
+        color: rgba($color-primary, 1);
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.text-button {
+    color: rgba($color-primary, .8);
+    background-color: transparent;
+    border-style: none;
+    box-shadow: none;
+
+    &:hover {
+        color: rgba($color-primary, 1);
+        transform: none;
+        box-shadow: none;
+    }
+
+}
