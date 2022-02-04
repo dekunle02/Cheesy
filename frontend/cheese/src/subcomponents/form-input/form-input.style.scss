@@ -1,0 +1,71 @@
+@import "../../sass/colors";
+@import "../../sass/dimens";
+
+.form-input-box {
+    margin: 1rem;
+    display: flex;
+    flex-direction: column; 
+
+    .form-input-label{
+        color: $color-black;
+        margin-left: .5rem;
+        font-size: 1.5rem;
+    }
+
+    .form-input{
+        background: transparent;
+        color: $color-black;
+        font-size: 1.5rem;
+        padding: .8rem;
+        display: block;
+        width: 100%;
+        border: 1px solid $color-grey;
+        border-radius: $small-border-radius;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .form-error{
+        background-color: rgba($color-red , .3);
+        margin-left: .5rem;
+        font-size: 1.5rem;
+        padding: .8rem;
+
+        &.hidden{
+           display:None; 
+        }
+
+    }
+
+}
+
+.icon-input-box {
+    position: relative;
+    margin: 1rem 0;
+
+    .icon-input{
+        background: transparent;
+        color: $color-black;
+        font-size: 1.5rem;
+        padding: .8rem;
+        display: block;
+        width: 100%;
+        border: 1px solid $color-grey;
+        border-radius: $small-border-radius;
+
+        &:focus {
+            outline: none;
+        }
+    }   
+
+    .icon-label{
+        position:absolute;
+        top: .8rem;
+        right:1.2rem;
+        font-size: 1.2rem;
+        color: rgba($color-primary, .8);
+        
+    }
+}
