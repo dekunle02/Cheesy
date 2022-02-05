@@ -2,15 +2,11 @@ import { useState } from 'react'
 import './dialog.style.scss'
 
 function Dialog({ children, canDismiss, ...otherProps }) {
-    const [dialogVisibility, setDialogVisibility] = useState(true)
-
-    if (canDismiss) {
-        setDialogVisibility(false)
-    }
+    const [dialogDismiss, setDialogDismiss] = useState(false)
 
     return (
-        <div className={`${dialogVisibility ? '' : 'invisible'} dialog-container`}>
-            <div className="dialog-backdrop" onClick={() => { setDialogVisibility(false) }} >
+        <div className={`${dialogDismiss|canDismiss ? 'invisible' : ''} dialog-container`}>
+            <div className="dialog-backdrop" onClick={() => { setDialogDismiss(true) }} >
             </div>
             <div className='dialog-content'>
                 {children}

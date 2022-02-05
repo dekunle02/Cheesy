@@ -20,6 +20,11 @@
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     }
 
+    &.block{
+        display: block; 
+        width: 100%;
+    }
+
 }
 
 .outline-button {

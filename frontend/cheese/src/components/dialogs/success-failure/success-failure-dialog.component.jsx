@@ -1,10 +1,10 @@
 import './success-failure-dialog.style.scss'
 
-import { ReactComponent as SuccessLogo } from '../../assets/success.svg';
-import { ReactComponent as ErrorLogo } from '../../assets/error.svg';
+import { ReactComponent as SuccessLogo } from '../../../assets/success.svg';
+import { ReactComponent as ErrorLogo } from '../../../assets/error.svg';
 
-import Dialog from '../../subcomponents/dialog/dialog.component'
-import { FlatCard } from '../../subcomponents/card/card.component'
+import Dialog from '../../../subcomponents/dialog/dialog.component'
+import { FlatCard } from '../../../subcomponents/card/card.component'
 
 
 /**
@@ -13,6 +13,7 @@ import { FlatCard } from '../../subcomponents/card/card.component'
  * canDismiss => to dismiss underlying dialog 
  * 
  */
+
 function SuccessFailureDialog({ isSuccess, message, ...otherProps}){
     return (
         <Dialog {...otherProps}>

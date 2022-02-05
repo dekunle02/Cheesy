@@ -2,14 +2,16 @@
 @import "../../sass/dimens";
 
 .form-input-box {
-    margin: 1rem;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
+    margin-top: 2rem;
 
     .form-input-label{
         color: $color-black;
         margin-left: .5rem;
         font-size: 1.5rem;
+        font-weight: bold;
+
     }
 
     .form-input{
@@ -19,7 +21,7 @@
         padding: .8rem;
         display: block;
         width: 100%;
-        border: 1px solid $color-grey;
+        border: 1px solid $color-black;
         border-radius: $small-border-radius;
 
         &:focus {

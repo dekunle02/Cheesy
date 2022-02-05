@@ -1,5 +1,14 @@
 import './form-input.style.scss'
 
+/**
+ * 
+ * @param {handleChange} 
+ * @param {label} 
+ * @param {showError} 
+ * @param {errorMessage} 
+ * @param {otherProps} other attributes of the input tag 
+ * @returns 
+ */
 
 function FormInput({handleChange, label, showError, errorMessage, ...otherProps}) {    
     
