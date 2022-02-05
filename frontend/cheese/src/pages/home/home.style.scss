@@ -1,0 +1,82 @@
+@import '../../sass/colors';
+@import '../../sass/dimens';
+
+.home-container{
+    height: 100vh;
+    position: relative;
+
+    .home-nav{
+        display: flex;
+        flex-direction: row;
+        background-color: $color-primary;
+
+        .home-logo-box{
+            width: 6rem;
+            height: 5rem;
+            display: flex;
+            justify-content: center;
+        }
+        .home-cheese{
+            align-self: center;
+            color:$color-secondary;
+            font-size: 3rem;
+            font-family: "Raleway", sans-serif;
+            font-weight: 400;
+        }
+        .home-signin-button{
+            align-self: center;
+            margin-right: 1rem;
+            margin-left:auto;
+            height: 100%;
+            width: 10rem;
+            display: flex;
+            justify-content: center;
+        }
+
+    }
+
+    .home-content{
+        height: 100%;
+        width: 100%;
+        justify-content: space-between;
+        // background: url('../../assets/blue-people.jpeg');
+        object-fit:scale-down;
+        // object-position: 5px 10%;
+        position: relative;
+
+        .home-call-to-action-card-holder{
+            position: absolute;
+            bottom: 15rem;
+            left: 2rem;
+            
+            .home-call-to-action{
+                border-radius: $small-border-radius;
+                background-color: $color-secondary;
+                padding: 3rem;
+
+    
+                .home-main-message{
+                    display:flex;
+                    flex-direction: column;
+                    color: $color-primary;
+                    font-size: 5rem;
+                    font-weight: 800;
+                    .home-sub-message{
+                        font-size: 2rem;
+                        font-weight: 400;
+                    }
+                }
+    
+                .home-register-button-container{
+                    margin: 4rem;
+                }
+    
+            }
+        }
+
+       
+    }
+
+   
+
+}

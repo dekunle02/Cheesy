@@ -1,25 +1,27 @@
-   *,
+*,
 *::after,
 *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
 }
 
 html {
-    font-size: 62.5%;
+  font-size: 62.5%;
 }
 
 body {
-    box-sizing: border-box;
-    font-family: 'Tajawal', sans-serif;
-    font-weight: 400;
-    line-height: 1.5;
-    height: 100vh;
-    padding: 1rem;
+  box-sizing: border-box;
+  font-family: "Tajawal", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  height: 100vh;
+  padding: 1rem;
+  
+  background-color: #fafafa;
+  
+}
 
-  }
-
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }

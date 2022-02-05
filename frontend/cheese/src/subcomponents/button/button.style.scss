@@ -24,6 +24,10 @@
         display: block; 
         width: 100%;
     }
+    &.inverse{
+        background-color: $color-secondary;
+        color: $color-primary;
+    }
 
 }
 

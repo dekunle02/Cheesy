@@ -1,8 +1,8 @@
 import './card.style.scss'
 
-function BaseCard({children, isFlat, isFloat, ...otherProps}) {
+function BaseCard({children, isFlat, isFloat, block,  ...otherProps}) {
     return (
-        <div className={`base-card ${isFlat ? 'flat-card' : ''} ${isFloat ? 'float-card' : ''}`} {...otherProps}>
+        <div className={`base-card ${isFlat ? 'flat-card' : ''} ${block ? 'block' : ''} ${isFloat ? 'float-card' : ''}`} {...otherProps}>
             {children}
         </div>
     )
@@ -10,19 +10,19 @@ function BaseCard({children, isFlat, isFloat, ...otherProps}) {
 
 function Card({children, ...otherProps}) {
     return(
-        <BaseCard children={children}/>
+        <BaseCard children={children} {...otherProps}/>
     )
 }
 
 function FlatCard({children, ...otherProps}) {
     return(
-        <BaseCard children={children} isFlat/>
+        <BaseCard children={children} isFlat {...otherProps}/>
     )
 }
 
 function FloatCard({children, ...otherProps}) {
     return (
-        <BaseCard children={children} isFloat/>
+        <BaseCard children={children} isFloat {...otherProps}/>
     )
 }
 
