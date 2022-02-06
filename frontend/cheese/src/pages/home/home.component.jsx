@@ -1,17 +1,37 @@
 import './home.style.scss'
-
+import {useState} from 'react'
 import { ReactComponent as Logo } from '../../assets/logo.svg'
 import { Button } from '../../subcomponents/button/button.component'
 import { Card } from '../../subcomponents/card/card.component'
 
+import SignInForm from '../../components/forms/signin-form/signin-form.component'
+import SignUpForm from '../../components/forms/signup-form/signup-form.component'
+
 function HomePage() {
+    const [canShowSignInForm, setShowSignInForm] = useState(false)
+    const [canShowSignUpForm, setShowSignUpForm] = useState(false)
+
+    const handleNewUser = () => {
+        setShowSignUpForm(true)
+        setShowSignInForm(false)
+    }
+
+    const handleOldUser = () => {
+        setShowSignInForm(true)
+        setShowSignUpForm(false)
+    }
+
     return (
         <div className="home-container">
+            
+            <SignInForm handleNewUser={handleNewUser} canShow={canShowSignInForm} setCanShow={setShowSignInForm} />
+            <SignUpForm handleOldUser={handleOldUser} canShow={canShowSignUpForm} setCanShow={setShowSignUpForm} />
+            
             <div className="home-nav">
                 <div className='home-logo-box'> <Logo /> </div>
                 <span className="home-cheese">CHEE$E</span>
                 <div className='home-signin-button'>
-                    <Button inverse block > SIGN IN</Button>
+                    <Button inverse block handleClick={() => setShowSignInForm(true)}> SIGN IN</Button>
                 </div>
             </div>
 
@@ -26,15 +46,13 @@ function HomePage() {
                         </div>
 
                         <div className='home-register-button-container'>
-                            <Button block >REGISTER NOW</Button>
+                            <Button block handleClick={() => setShowSignUpForm(true)}>REGISTER NOW</Button>
                         </div>
                     </div>
                 </Card>
                 </div>
                 
             </div>
-
-
 
         </div>
     )

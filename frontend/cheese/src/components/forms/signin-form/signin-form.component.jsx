@@ -1,9 +1,14 @@
 import './signin-form.style.scss'
-import { useState } from 'react'
+
+import { useState} from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setUserData} from '../../../redux/user/user.slice'
 
 import winter from '../../../assets/winter.jpeg';
 import { ReactComponent as Logo } from '../../../assets/logo.svg';
-import getAuth from '../../../api/auth';
+import useAuth from '../../../api/auth';
+import loadStates from '../../../api/loadStates';
 import Dialog from '../../../subcomponents/dialog/dialog.component'
 import { FlatCard } from '../../../subcomponents/card/card.component'
 import { FormInput } from '../../../subcomponents/form-input/form-input.component'
@@ -11,13 +16,15 @@ import { Button, TextButton } from '../../../subcomponents/button/button.compone
 import ProgressSpinner from "../../../subcomponents/progress/progress.component"
 
 
-function SignInForm({ ...otherProps }) {
+function SignInForm({handleNewUser,...otherProps }) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [isLoading, setLoadingState] = useState(false)
+    const [loadState, setLoadState] = useState(loadStates.FINISHED)
+    const auth = useAuth()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
-    const auth = getAuth("token")
-    
+
     const handleChange = event => {
         const { value, name } = event.target
         if (name === 'email') {
@@ -30,16 +37,23 @@ function SignInForm({ ...otherProps }) {
 
     const handleSignIn = event => {
         event.preventDefault()
-        console.log("signIn", email, password)
+        setLoadState(loadStates.LOADING)
+        auth.signIn(email, password).then( response => {
+            setLoadState(loadStates.FINISHED)
+            if (response.status === auth.SUCCESS) {
+                dispatch(setUserData(response.data))
+                navigate('/app', {replace:true})
+            } else {
+                alert(response.data.message)
+            }
+        }
+        )
     }
     
     const handleForgotPassword = () => {
         console.log("forgot",email)
     }
 
-    const handleNewUser = () => {
-        console.log("New User")
-    }
 
     return (
         <Dialog {...otherProps}>
@@ -74,7 +88,7 @@ function SignInForm({ ...otherProps }) {
                                 <span className="signin-forgot" onClick={handleForgotPassword}>Forgot password?</span>
                                 <div className='signin-button-container'>
                                     <Button block handleClick={handleSignIn}> SIGN IN </Button>
-                                    <ProgressSpinner canShow={isLoading} />
+                                    <ProgressSpinner canShow={loadState === loadStates.LOADING} />
                                 </div>
                             </form>
                             <TextButton block handleClick={handleNewUser} >Don't have an account? Register</TextButton>

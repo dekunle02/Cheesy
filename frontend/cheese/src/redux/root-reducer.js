@@ -3,7 +3,7 @@ import { persistReducer } from 'redux-persist'
 import sessionStorage from 'redux-persist/lib/storage/session'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
-import userReducer from './user/user.reducer'
+import userReducer from './user/user.slice'
 
 const persistConfig = {
     key: 'root',
@@ -17,3 +17,4 @@ const rootReducer = combineReducers({
 })
 
 export default persistReducer(persistConfig, rootReducer)
+

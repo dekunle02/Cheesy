@@ -1,0 +1,90 @@
+@import "../../sass/colors";
+@import "../../sass/dimens";
+
+//  NAVLINK ITEM
+
+.navlink {
+  padding: 0.6rem 1.5rem;
+  margin: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  color: rgba($color-secondary, 0.5);
+  cursor: pointer;
+
+  &.last {
+    margin-top: auto;
+  }
+
+  &:hover {
+    background-color: rgba($color-white, 0.5);
+    color: rgba($color-secondary, 0.8);
+  }
+
+  &.active {
+    background-color: $color-white;
+    color: $color-primary;
+  }
+
+  .navlink-icon-container {
+    padding-right: 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .navlink-text-container {
+    padding-top: 1rem;
+    text-transform: capitalize;
+    // color: rgba($color-white, 0.5);
+  }
+}
+
+// SIDENAV STYLES
+
+.sidenav {
+  width: $sidenav-width;
+  min-height: $sidenav-height;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  color: white;
+  background-color: $color-primary;
+
+  .sidenav-logo-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10% 0;
+
+    .nav-cheese {
+      align-self: center;
+      color: $color-secondary;
+      font-size: 3rem;
+      font-family: "Raleway", sans-serif;
+      font-weight: 400;
+    }
+    .sidenav-logo-box {
+      width: 20%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+
+  .sidenav-divider {
+    color: $color-white;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .sidenav-menu {
+    width: 100%;
+    font-size: 1.8rem;
+    height: 100%;
+    display: flex;
+    margin: 1.5rem 0;
+    flex-direction: column;
+    flex-grow: 5;
+  }
+}

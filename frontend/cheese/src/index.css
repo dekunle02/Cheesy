@@ -18,8 +18,8 @@ body {
   height: 100vh;
   padding: 1rem;
   
-  background-color: #fafafa;
-  
+  background: url('./assets/sun-tornado.svg');
+
 }
 
 a {

@@ -1,9 +1,9 @@
 import "./button.style.scss"
 
-function BaseButton({ children, handleClick, isText, isOutline, inverse, block, ...otherProps }) {
+function BaseButton({ children, handleClick, text, outline, inverse, block, ...otherProps }) {
 
     return (
-        <button className={`base-button ${isText ? 'text-button' : ''} ${inverse ? 'inverse' : ''} ${block ? 'block' : ''} ${isOutline ? 'outline-button' : ''}`} onClick={handleClick} {...otherProps}>
+        <button className={`base-button ${text ? 'text-button' : ''} ${inverse ? 'inverse' : ''} ${block ? 'block' : ''} ${outline ? 'outline-button' : ''}`} onClick={handleClick} {...otherProps}>
             {children}
         </button>
     )
@@ -19,14 +19,14 @@ function Button({ children, ...otherProps }) {
 
 function TextButton({ children, ...otherProps }) {
     return (
-        <BaseButton children={children} isText {...otherProps}/>
+        <BaseButton children={children} text {...otherProps}/>
     )
 }
 
 
 function OutlineButton({children, ...otherProps}) {
     return (
-        <BaseButton children={children} isOutline {...otherProps}/>
+        <BaseButton children={children} outline {...otherProps}/>
     )
 }
 

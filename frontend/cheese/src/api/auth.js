@@ -1,7 +1,12 @@
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 class AuthClient {
-    constructor(token) {
-        this.token = token
-    }
+    // constructor(token) {
+    //     this.token = token
+    // }
+
     SUCCESS = 'success'
     FAILURE = 'failure'
 
@@ -14,6 +19,7 @@ class AuthClient {
      * token: {access: , refresh: }
      */
     async signUp(username, email, password) {
+        await sleep(2000);
         return {
             status: this.SUCCESS,
             data: {
@@ -31,6 +37,7 @@ class AuthClient {
     }
 
     async signIn(email, password) {
+        await sleep(2000);
         return {
             status: this.SUCCESS,
             data: {
@@ -46,8 +53,15 @@ class AuthClient {
         }
     }
 
-
+    async validateToken(token) {
+        // token = {access:, refresh: ,}
+        await sleep(1000);
+        return {
+            status: this.SUCCESS,
+            data: true
+        }
+    }
 }
 
-const getAuth = token => new AuthClient(token)
-export default getAuth
+const useAuth = () => new AuthClient()
+export default useAuth

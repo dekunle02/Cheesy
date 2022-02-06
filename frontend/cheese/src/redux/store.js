@@ -12,3 +12,6 @@ export const persistor = persistStore(store)
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default { store, persistor }
+
+// https://github.com/rt2zz/redux-persist
+// https://react-redux.js.org/tutorials/quick-start

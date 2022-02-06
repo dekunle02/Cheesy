@@ -1,10 +1,10 @@
 import './dashboard.style.scss'
-
+import { Button } from '../../subcomponents/button/button.component'
 
 function Dashboard(){
     return (
-        <div>
-            Dashboard Component
+        <div>            
+            DASHBOARD
         </div>
     )
 }
