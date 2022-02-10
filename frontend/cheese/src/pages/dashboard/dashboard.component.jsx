@@ -5,6 +5,7 @@ function Dashboard(){
     return (
         <div>            
             DASHBOARD
+            <Button inverse text>CLICK ME</Button>
         </div>
     )
 }

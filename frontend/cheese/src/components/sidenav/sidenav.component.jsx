@@ -35,7 +35,7 @@ function SideNav() {
     const navLinks = [
         { id: 1, link: '', text: 'dashboard', icon: 'dashboard' },
         { id: 2, link: 'pots', text: 'Pots', icon: 'credit_card' },
-        { id: 3, link: 'transactions', text: 'Transactions', icon: 'receipt_long' },
+        { id: 3, link: 'transactions', text: 'Transactions', icon: 'repeat' },
     ]
 
     const handleSignOut = () => {

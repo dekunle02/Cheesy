@@ -3,7 +3,7 @@ import './signin-form.style.scss'
 import { useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { setUserData} from '../../../redux/user/user.slice'
+import { setUserData } from '../../../redux/user/user.slice'
 
 import winter from '../../../assets/winter.jpeg';
 import { ReactComponent as Logo } from '../../../assets/logo.svg';

@@ -19,6 +19,9 @@ body {
   padding: 1rem;
   
   background: url('./assets/sun-tornado.svg');
+  object-fit: fill;
+  background-repeat: no-repeat;
+  background-size: cover;
 
 }
 
