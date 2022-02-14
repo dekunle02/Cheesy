@@ -83,3 +83,26 @@
     }
 
 }
+
+
+.period-button-group{
+    margin:0 2rem;
+    
+    .period-button{
+        margin: 0 .5rem;
+        color: rgba($color-primary, .5);
+        background-color: transparent;
+        border-style: none;
+        box-shadow: none;
+    
+        &:hover {
+            color: rgba($color-primary, 1);
+            transform: none;
+            box-shadow: none;
+        }
+        &.active{
+            color: rgba($color-primary, 1);
+        }
+    }
+
+}

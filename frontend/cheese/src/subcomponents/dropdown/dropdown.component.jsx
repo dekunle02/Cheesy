@@ -1,58 +1,23 @@
-import { useState } from 'react'
-
 import "./dropdown.style.scss"
-import { FlatCard } from '../card/card.component'
 
-/*
-Drop down receives items that are an array of item objects
+function Dropdown({ title, items, onItemSelected, defaultSelectedId }) {
+    let defaultSelectedItem = items.find(item => (item.id === defaultSelectedId))
 
-Item object->  {text: "", id: "" }
-handleSelect -> {(selectedId) => {}}, this handles what happens when each item is selected and closes the dropdown
-
-*/
-
-function DropdownItem({ item, selected, handleClick, ...otherProps }) {
-
-    return (
-        <div className={`${selected ? 'selected' : ''} dropdown-item`} onClick={() => handleClick(item)}>
-            <span>{item.text}</span>
-        </div>
-    )
-}
-
-
-function Dropdown({ items, handleSelect, ...otherProps }) {
-    const [isCollapsed, setIsCollapsed] = useState(true)
-    const [selectedItem, setSelectedItem] = useState(items[0])
-
-    const handleItemCick = item => {
-        setSelectedItem(item)
-        setIsCollapsed(true)
-        handleSelect(item.id)
+    const handleChange = event => {
+        const selectedItem = items.find(item => item.text === event.target.value)
+        onItemSelected(selectedItem.id)
     }
 
     return (
-        <div className="dropdown-box">
-
-            <div className="dropdown-selected-item-container">
-                <DropdownItem selected item={selectedItem} handleClick={(selectedItem) => setIsCollapsed(!isCollapsed)} />
-                <span className="material-icons" onClick={() => setIsCollapsed(!isCollapsed)}>
-                    expand_more
-                </span>
-            </div>
-
-            <div className={`${isCollapsed ? 'hidden' : ''} dropdown-menu-items`}>
-                <FlatCard>
-                    {
-                        items.map(item => (
-                            <DropdownItem key={item.id} item={item} handleClick={handleItemCick} />
-                        ))
-                    }
-                </FlatCard>
-            </div>
-
+        <div>
+            {
+                defaultSelectedItem ?
+                    <select className="dropdown" name={title} id={title} onChange={handleChange} defaultValue={defaultSelectedItem.text} >
+                        {items.map((item) => <option key={item.id} value={item.text}>{item.text}</option>)}
+                    </select>
+                    : ""
+            }
         </div>
-
     )
 }
 

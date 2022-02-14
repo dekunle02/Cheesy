@@ -1,0 +1,21 @@
+.net-card-container {
+    width: 70%;
+    .net-card-content {
+        padding: 2rem;
+
+        .net-card-top {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .net-total-balance {
+                font-size: 3rem;
+                font-family: monospace;
+                flex-grow: 1;
+            }
+        }
+    }
+
+    
+
+}

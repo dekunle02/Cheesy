@@ -19,7 +19,7 @@ class AuthClient {
      * token: {access: , refresh: }
      */
     async signUp(username, email, password) {
-        await sleep(2000);
+        await sleep(0);
         return {
             status: this.SUCCESS,
             data: {
@@ -37,7 +37,7 @@ class AuthClient {
     }
 
     async signIn(email, password) {
-        await sleep(2000);
+        await sleep(0);
         return {
             status: this.SUCCESS,
             data: {
@@ -55,7 +55,7 @@ class AuthClient {
 
     async validateToken(token) {
         // token = {access:, refresh: ,}
-        await sleep(1000);
+        await sleep(0);
         return {
             status: this.SUCCESS,
             data: true
