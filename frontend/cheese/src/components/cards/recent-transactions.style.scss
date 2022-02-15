@@ -6,7 +6,7 @@
   margin-left: 1.5rem;
 
   .recent-trans-content {
-    background-color: rgba($color-secondary, 0.5);
+    background-color: rgba(#f3e5f5, 0.5);
     border-radius: $small-border-radius;
     padding: 1rem;
     height: 100%;
@@ -37,7 +37,6 @@
   .amount {
     font-size: 1.8rem;
     text-align: end;
-  
 
     &.inflow {
       color: $color-green;
@@ -48,6 +47,6 @@
   }
   .date {
     font-size: 1.2rem;
-    text-align:start
+    text-align: start;
   }
 }

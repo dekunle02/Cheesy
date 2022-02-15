@@ -109,13 +109,64 @@ class ApiClient {
         return {
             status: this.SUCCESS,
             data: [
-                { id: 1, name: "Monzo", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 230, color_code:"#0000ff" },
-                { id: 2, name: "Paypal", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 550, color_code:"" },
-                { id: 3, name: "HSBC", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 2300, color_code:"#2fffa1" },
-                { id: 4, name: "GTB Dom", currency: { id: 1, code: "USD", symbol: "$", rate: 1 }, amount: 1300, color_code:"#ffaf17" }
+                { id: 1, name: "Monzo", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 230, color_code: "#0000ff" },
+                { id: 2, name: "Paypal", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 550, color_code: "" },
+                { id: 3, name: "HSBC", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 2300, color_code: "#2fffa1" },
+                { id: 4, name: "GTB Dom", currency: { id: 1, code: "USD", symbol: "$", rate: 1 }, amount: 1300, color_code: "#ffaf17" }
             ]
         }
 
+    }
+
+    async getPot(potId) {
+        let data = {}
+        switch (potId) {
+            case 1:
+                data = { id: 1, name: "Monzo", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 230, color_code: "#0000ff" }
+                break
+            case 2:
+                data = { id: 2, name: "Paypal", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 550, color_code: "" }
+                break
+            case 3:
+                data = { id: 3, name: "HSBC", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 2300, color_code: "#2fffa1" }
+                break
+            default:
+                data = { id: 4, name: "GTB Dom", currency: { id: 1, code: "USD", symbol: "$", rate: 1 }, amount: 1300, color_code: "#ffaf17" }
+                break
+        }
+        return {
+            status: this.SUCCESS,
+            data: data
+        }
+    }
+
+    async getPotRange(potId, startDate, granularity) {
+        let ranges = null
+        if (startDate === "1W") {
+            ranges = {
+                dates: ["07-02-2022", "08-02-2022", "09-02-2022", "10-02-2022", "11-02-2022", "12-02-2022", "13-02-2022"],
+                amounts: [5045.50, 3049.23, 6000.22, 1024.21, 7400.23, 4495.22, 4005.61]
+            }
+        } else if (startDate === "1M") {
+            ranges = {
+                dates: ["01-02-2022", "02-02-2022", "03-02-2022", "04-02-2022", "05-02-2022", "06-02-2022", "07-0ma2-2022", "08-02-2022", "09-02-2022", "10-02-2022", "11-02-2022", "12-02-2022", "13-02-2022"],
+                amounts: [5045.50, 3049.23, 6000.22, 1024.21, 7400.23, 4495.22, 4405.61, 3445.20, 7033.32, 4556.33, 6000.27, 5578.67, 10345.33]
+            }
+        } else if (startDate === "1Y") {
+            ranges = {
+                dates: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                amounts: [5045.50, 3049.23, 6000.22, 1024.21, 7400.23, 4495.22]
+            }
+        } else {
+            ranges = {
+                dates: ["2015", "2016", "2017", "2018", "2019", "2020", "2021"],
+                amounts: [5045.50, 3049.23, 6000.22, 1024.21, 7400.23, 4495.22, 4405.61]
+            }
+        }
+        return ({
+            status: this.SUCCESS,
+            data: ranges
+        })
     }
 
     async getAllPotsInCurrency(currencyId) {
@@ -134,7 +185,7 @@ class ApiClient {
         return {
             status: this.SUCCESS,
             data: {
-                dates: ["14-02-2022","13-02-2022","12-02-2022","11-02-2022","10-02-2022","09-02-2022"],
+                dates: ["14-02-2022", "13-02-2022", "12-02-2022", "11-02-2022", "10-02-2022", "09-02-2022"],
                 records: {
                     in: [100, 10, 50, 0, 0, 20],
                     out: [10, 60, 20, 0, 5, 12]

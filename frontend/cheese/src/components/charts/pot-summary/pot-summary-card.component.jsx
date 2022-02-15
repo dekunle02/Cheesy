@@ -69,16 +69,6 @@ function PotSummaryDonut() {
                 },
 
             },
-            theme: {
-                mode: 'light',
-                palette: 'palette7',
-                monochrome: {
-                    enabled: false,
-                    color: '#255aee',
-                    shadeTo: 'light',
-                    shadeIntensity: 0.65
-                },
-            },
             labels: labels()
         },
         series: series()

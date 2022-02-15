@@ -1,18 +1,41 @@
-.pots-page-heading{
-    h1{
-        font-size: 3rem;
+.pots-page-container{
+    width: 100%;
+    .pots-page-heading{
+        h1{
+            font-size: 3rem;
+        }
+        span{
+            font-size:1.5rem;
+        }
+        .add-btn-container{
+            float: right;
+            display: inline;
+            margin-top:-2rem;
+            
+            .add-btn-content{
+                padding: 0 1rem;
+                display: flex;
+                align-items: center;
+
+                .material-icons{
+                    padding-left: 1rem;
+                    font-size: 2rem;
+                }
+            }
+        }
+        
     }
-    span{
-        font-size:1.5rem;
-    }
+
 }
+
 
 .pots-cards-container{
     display: flex;
-    padding:5rem 1rem;
+    padding:5rem 2rem;
     flex-direction: row;
     overflow: scroll;
     flex-wrap: nowrap;
+    width:100%;
 
     .pot-item-wrapper{
         cursor: pointer;
