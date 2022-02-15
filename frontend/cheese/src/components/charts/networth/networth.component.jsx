@@ -2,8 +2,8 @@ import './networth.style.scss'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Chart from "react-apexcharts";
-import { FloatCard } from '../../../subcomponents/card/card.component'
-import { PeriodButtonGroup } from '../../../subcomponents/button/button.component'
+import { FlatCard } from '../../../subcomponents/card/card.component'
+import { ButtonGroup } from '../../../subcomponents/button/button.component'
 import { formatMoneyNumber } from "../../../api/utils"
 import Dropdown from '../../../subcomponents/dropdown/dropdown.component'
 import useApi from '../../../api/api'
@@ -61,7 +61,6 @@ function NetworthCard() {
                 alert("Error fetching range...")
             }
         })
-        console.log("fetched")
     }, [periodId])
 
 
@@ -90,10 +89,6 @@ function NetworthCard() {
         }
         return range.ranges.amounts
     }
-
-    console.log("xAxis", xAxis())
-    console.log("yAxis", yAxis())
-
 
     const chartConfig = {
 
@@ -137,17 +132,17 @@ function NetworthCard() {
 
     return (
         <div className="net-card-container">
-            <FloatCard block>
+            <FlatCard block>
                 <div className="net-card-content">
                     <div className="net-card-top">
                         <h4 className="net-total-balance">{displayedBalance()}</h4>
-                        <PeriodButtonGroup items={periodButtonItems} defaultSelectedId={periodId} onItemSelected={onPeriodButtonSelected} />
+                        <ButtonGroup items={periodButtonItems} defaultSelectedId={periodId} onItemSelected={onPeriodButtonSelected} />
                         <Dropdown title='currency' items={currencyDropDownItems} defaultSelectedId={currencyId} onItemSelected={onCurrencySelected} />
                     </div>
                     <Chart options={chartConfig.options} series={chartConfig.series} type="area" height={250} />
 
                 </div>
-            </FloatCard>
+            </FlatCard>
         </div>
     )
 }

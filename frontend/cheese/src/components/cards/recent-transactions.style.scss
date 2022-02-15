@@ -1,0 +1,53 @@
+@import "../../sass/colors";
+@import "../../sass/dimens";
+
+.recent-trans-container {
+  flex-grow: 1;
+  margin-left: 1.5rem;
+
+  .recent-trans-content {
+    background-color: rgba($color-secondary, 0.5);
+    border-radius: $small-border-radius;
+    padding: 1rem;
+    height: 100%;
+
+    .recent-title {
+      font-size: 2rem;
+      text-align: center;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.transaction-row {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 50%);
+  justify-content: start;
+
+  .title {
+    font-size: 1.8rem;
+    text-align: start;
+  }
+
+  .amount {
+    font-size: 1.8rem;
+    text-align: end;
+  
+
+    &.inflow {
+      color: $color-green;
+    }
+    &.outflow {
+      color: $color-red;
+    }
+  }
+  .date {
+    font-size: 1.2rem;
+    text-align:start
+  }
+}

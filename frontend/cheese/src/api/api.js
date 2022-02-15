@@ -92,6 +92,19 @@ class ApiClient {
 
     }
 
+    async getRecentTransactions() {
+        return {
+            status: this.SUCCESS,
+            data: [
+                {id: 1, date: "2022-02-14", transaction: {title:"Commission", amount: 200, kind: 'inflow', pot: {name: "Monzo", currency: {symbol: "£"}}}},
+                {id: 2, date: "2022-02-14", transaction: {title:"Taxi", amount: 20, kind: 'outflow', pot: {name: "HSBC", currency: {symbol: "£"}}}},
+                {id: 3, date: "2022-02-12", transaction: {title:"Remittance", amount: 64, kind: 'inflow', pot: {name: "Credit", currency: {symbol: "£"}}}},
+                {id: 4, date: "2022-02-12", transaction: {title:"Gift", amount: 50, kind: 'inflow', pot: {name: "GTB", currency: {symbol: "€"}}}},
+                {id: 5, date: "2022-02-11", transaction: {title:"Royalties", amount: 60, kind: 'inflow', pot: {name: "Monzo", currency: {symbol: "£"}}}},
+               ]
+        }
+    }
+
 
 }
 

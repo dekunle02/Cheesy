@@ -32,7 +32,7 @@ function OutlineButton({ children, ...otherProps }) {
 }
 
 
-function PeriodButtonGroup({ items, defaultSelectedId, onItemSelected }) {
+function ButtonGroup({ items, defaultSelectedId, onItemSelected }) {
     // Accept an array of items {id: , text: }
     // And a callBack for when the item is selected. By default, 1st item is selected
     // the id of the preselected button
@@ -43,9 +43,9 @@ function PeriodButtonGroup({ items, defaultSelectedId, onItemSelected }) {
     }
 
     return (
-        <div className="period-button-group">
+        <div className="button-group">
             {items.map(item => (
-                <button key={item.id} onClick={() => handleSelection(item.id)} className={`period-button ${item.id===selectedId ? "active":""}`}>
+                <button key={item.id} onClick={() => handleSelection(item.id)} className={`button-group-btn ${item.id===selectedId ? "active":""}`}>
                     {item.text}</button>
             ))}
         </div>
@@ -54,4 +54,4 @@ function PeriodButtonGroup({ items, defaultSelectedId, onItemSelected }) {
 }
 
 
-export { Button, TextButton, OutlineButton, PeriodButtonGroup }
+export { Button, TextButton, OutlineButton, ButtonGroup }
