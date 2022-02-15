@@ -109,10 +109,10 @@ class ApiClient {
         return {
             status: this.SUCCESS,
             data: [
-                { id: 1, name: "Monzo", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 230 },
-                { id: 1, name: "Paypal", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 550 },
-                { id: 1, name: "HSBC", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 2300 },
-                { id: 1, name: "GTB Dom", currency: { id: 1, code: "USD", symbol: "$", rate: 1 }, amount: 1300 }
+                { id: 1, name: "Monzo", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 230, color_code:"#0000ff" },
+                { id: 2, name: "Paypal", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 550, color_code:"" },
+                { id: 3, name: "HSBC", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 2300, color_code:"#2fffa1" },
+                { id: 4, name: "GTB Dom", currency: { id: 1, code: "USD", symbol: "$", rate: 1 }, amount: 1300, color_code:"#ffaf17" }
             ]
         }
 

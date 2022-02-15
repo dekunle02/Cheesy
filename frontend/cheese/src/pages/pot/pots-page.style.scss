@@ -1,0 +1,20 @@
+.pots-page-heading{
+    h1{
+        font-size: 3rem;
+    }
+    span{
+        font-size:1.5rem;
+    }
+}
+
+.pots-cards-container{
+    display: flex;
+    padding:5rem 1rem;
+    flex-direction: row;
+    overflow: scroll;
+    flex-wrap: nowrap;
+
+    .pot-item-wrapper{
+        cursor: pointer;
+    }
+}

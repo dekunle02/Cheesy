@@ -1,0 +1,53 @@
+@import "../../sass/colors";
+
+.pot-item-container {
+  display: inline-block;
+  transition: all .2s ease-in-out;
+  margin: 0 2rem;
+
+  &.active{
+    transform: scale(1.2);
+  }
+
+  .pot-item-content {
+    margin: 1.5rem;
+    width: 25rem;
+
+    .pot-item-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .pot-icon {
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 1rem;
+        &.active{
+          background-color: $color-primary;
+        }
+      }
+
+      .pot-title {
+        font-size: 2rem;
+        padding-top: .5rem;
+      }
+      .material-icons {
+        flex-grow: 1;
+        text-align: end;
+        // color: $color-secondary;
+      }
+    }
+
+    .pot-amount {
+      font-size: 3rem;
+      text-align: center;
+      margin: 1rem 2rem;
+      font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+      font-weight: 300;
+      color: $color-primary;
+    }
+  }
+}

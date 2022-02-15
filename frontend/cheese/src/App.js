@@ -3,12 +3,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import HomePage from './pages/home/home.component';
 import Dashboard from './pages/dashboard/dashboard.component'
+import PotsPage from './pages/pot/pots-page.component';
 import AppLayout from './AppLayout';
 
 
 function App() {
-  // const userData = useSelector((state) => state.user.userData)
-  // const dispatch = useDispatch()
+
   return (
     <BrowserRouter>
       
@@ -16,6 +16,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
           <Route path="/app/" element={<AppLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="pots" element={<PotsPage/>} />
             <Route
               path="*"
               element={
