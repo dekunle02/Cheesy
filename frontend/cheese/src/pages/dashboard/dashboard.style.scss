@@ -4,5 +4,14 @@
     .dashboard-row{
         display: flex;
         flex-direction: row;
+    
+        .dashboard-summary-donut{
+            display:inline-block
+        }
+        .dashboard-spending-habit{
+            margin:2rem;
+            text-align: center;
+        }
     }
+
 }

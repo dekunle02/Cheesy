@@ -44,7 +44,6 @@ class ApiClient {
         })
     }
 
-
     async getNetworthRange(startDate, granularity) {
         this.sleep(0)
 
@@ -96,12 +95,51 @@ class ApiClient {
         return {
             status: this.SUCCESS,
             data: [
-                {id: 1, date: "2022-02-14", transaction: {title:"Commission", amount: 200, kind: 'inflow', pot: {name: "Monzo", currency: {symbol: "£"}}}},
-                {id: 2, date: "2022-02-14", transaction: {title:"Taxi", amount: 20, kind: 'outflow', pot: {name: "HSBC", currency: {symbol: "£"}}}},
-                {id: 3, date: "2022-02-12", transaction: {title:"Remittance", amount: 64, kind: 'inflow', pot: {name: "Credit", currency: {symbol: "£"}}}},
-                {id: 4, date: "2022-02-12", transaction: {title:"Gift", amount: 50, kind: 'inflow', pot: {name: "GTB", currency: {symbol: "€"}}}},
-                {id: 5, date: "2022-02-11", transaction: {title:"Royalties", amount: 60, kind: 'inflow', pot: {name: "Monzo", currency: {symbol: "£"}}}},
-               ]
+                { id: 1, date: "2022-02-14", transaction: { title: "Commission", amount: 200, kind: 'inflow', pot: { name: "Monzo", currency: { symbol: "£" } } } },
+                { id: 2, date: "2022-02-14", transaction: { title: "Taxi", amount: 20, kind: 'outflow', pot: { name: "HSBC", currency: { symbol: "£" } } } },
+                { id: 3, date: "2022-02-12", transaction: { title: "Remittance", amount: 64, kind: 'inflow', pot: { name: "Credit", currency: { symbol: "£" } } } },
+                { id: 4, date: "2022-02-12", transaction: { title: "Gift", amount: 50, kind: 'inflow', pot: { name: "GTB", currency: { symbol: "€" } } } },
+                { id: 5, date: "2022-02-11", transaction: { title: "Royalties", amount: 60, kind: 'inflow', pot: { name: "Monzo", currency: { symbol: "£" } } } },
+            ]
+        }
+    }
+
+    async getAllPots() {
+
+        return {
+            status: this.SUCCESS,
+            data: [
+                { id: 1, name: "Monzo", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 230 },
+                { id: 1, name: "Paypal", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 550 },
+                { id: 1, name: "HSBC", currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 }, amount: 2300 },
+                { id: 1, name: "GTB Dom", currency: { id: 1, code: "USD", symbol: "$", rate: 1 }, amount: 1300 }
+            ]
+        }
+
+    }
+
+    async getAllPotsInCurrency(currencyId) {
+        return {
+            status: this.SUCCESS,
+            data: [
+                { id: 1, name: "Monzo", amount: 230 },
+                { id: 1, name: "Paypal", amount: 550 },
+                { id: 1, name: "HSBC", amount: 2300 },
+                { id: 1, name: "GTB Dom", amount: 1300 }
+            ]
+        }
+    }
+
+    async getTransactionNet(startDate, granularity, currencyId) {
+        return {
+            status: this.SUCCESS,
+            data: {
+                dates: ["14-02-2022","13-02-2022","12-02-2022","11-02-2022","10-02-2022","09-02-2022"],
+                records: {
+                    in: [100, 10, 50, 0, 0, 20],
+                    out: [10, 60, 20, 0, 5, 12]
+                }
+            }
         }
     }
 

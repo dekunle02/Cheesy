@@ -1,5 +1,6 @@
 import './recent-transactions.style.scss'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { FlatCard } from '../../subcomponents/card/card.component'
 import { ButtonGroup } from '../../subcomponents/button/button.component'
 import { formatMoneyNumber } from '../../api/utils'
@@ -8,11 +9,12 @@ import useApi from '../../api/api'
 function TransactionRow({ record }) {
     const {date, transaction} = record
     const {title, amount, kind, pot} = transaction
+    const sign = kind === 'inflow' ? "+" : "-" 
     
     return (
         <div className="transaction-row">
             <h5 className="title">{title}</h5>
-            <h5 className={`amount ${kind}`}>{`${pot.currency.symbol}${formatMoneyNumber(amount)}`}</h5>
+            <h5 className={`amount ${kind}`}>{`${sign}${pot.currency.symbol}${formatMoneyNumber(amount)}`}</h5>
             <h5 className="date">{date} {pot.name}</h5>
         </div>
     )
@@ -20,7 +22,8 @@ function TransactionRow({ record }) {
 
 
 function RecentTransactionsCard() {
-    const api = useApi()
+    const token = useSelector(state => state.user.userData.token)
+    const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])
     // const [sortId, setSortId] = useState(1)
 

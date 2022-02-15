@@ -3,10 +3,14 @@
     .donut-content{
         padding: 2rem;
 
-        .donut-title{
-            text-align: center;
-            font-size: 2rem;
+        .donut-heading{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .donut-title{
+                font-size: 2rem;
+            }
         }
-
+        
     }
 }
