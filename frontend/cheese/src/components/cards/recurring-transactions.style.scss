@@ -2,7 +2,7 @@
 @import "../../sass/dimens";
 
 .recurring-trans-container {
-  margin:2rem 0;
+  margin: 2rem 0;
 
   .recurring-trans-content {
     border-radius: $small-border-radius;
@@ -16,12 +16,12 @@
       justify-content: space-between;
       margin: 0 1rem;
 
-      .material-icons{
-        color:$color-primary;
+      .material-icons {
+        color: $color-primary;
         cursor: pointer;
-        transition: all .2s ease-in-out;
+        transition: all 0.2s ease-in-out;
 
-        &:hover{
+        &:hover {
           transform: scale(1.2);
         }
       }
@@ -35,18 +35,42 @@
 }
 
 .rec-transaction-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-rows: min-content min-content;
+  grid-template-columns: min-content .5fr 1fr min-content .3fr;
+
   align-items: center;
-  padding: .5rem 1rem;
-  background-color: rgba($color-grey, .2);
+  padding: 0.5rem 1rem;
+  background-color: rgba($color-grey, 0.2);
   margin: 1rem 0;
   cursor: pointer;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 
-  &:hover{
-    background-color: rgba($color-grey, .4);
+  &:hover {
+    background-color: rgba($color-grey, 0.4);
+  }
+
+  .material-icons {
+    &.in {
+      color: $color-green;
+    }
+    &.out {
+      color: $color-red;
+    }
+  }
+  
+  .kind{
+    grid-column: 1;
+    grid-row: 1 / span 2 ;
+    align-self: center;
+    padding-right: 1rem;
+  }
+
+  .recurring{
+    text-align: end;
+    align-self: center;
+    grid-column: 4;
+    grid-row: 1/span 2;
   }
 
   .rec-title {
@@ -54,9 +78,25 @@
     text-align: start;
   }
 
+  .treat-date {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .description {
+    grid-column: 3;
+    grid-row: 1/ span 2;
+    align-self: center;
+    font-size: 1.5rem;
+    padding-left: 2rem;
+  }
+
   .amount {
     font-size: 1.8rem;
     text-align: end;
+    align-self: center;
+    grid-column: 5;
+    grid-row: 1 / span 2 ;
 
     &.inflow {
       color: $color-green;

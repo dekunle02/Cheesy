@@ -65,6 +65,9 @@ function SpendingHabitChart() {
                 }
                 
             },
+            stroke: {
+                curve: 'stepline',
+              },
             legend: {
                 show: true,
                 position: 'top',
@@ -93,7 +96,7 @@ function SpendingHabitChart() {
     return (
         <div className="spending-habits-container">
             <h4 className="spending-habits-title">Spending Habits</h4>
-            <Chart options={chartConfig.options} series={chartConfig.series} type="bar" height="300" width="420" />
+            <Chart options={chartConfig.options} series={chartConfig.series} type="line" height="300" width="420" />
         </div>
 
     )

@@ -1,10 +1,12 @@
 import './App.scss';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import AppLayout from './AppLayout';
+
 import HomePage from './pages/home/home.component';
 import Dashboard from './pages/dashboard/dashboard.component'
 import PotsPage from './pages/pot/pots-page.component';
-import AppLayout from './AppLayout';
+import TransactionsPage from './pages/transaction/transaction.page.component';
 
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
           <Route path="/app/" element={<AppLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="pots" element={<PotsPage/>} />
+            <Route path="transactions" element={<TransactionsPage/>} />
             <Route
               path="*"
               element={

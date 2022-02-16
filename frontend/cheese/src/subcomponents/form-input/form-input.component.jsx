@@ -1,4 +1,5 @@
 import './form-input.style.scss'
+import {useState} from 'react'
 
 /**
  * 
@@ -23,12 +24,24 @@ function FormInput({handleChange, label, showError, errorMessage, ...otherProps}
 
 
 function IconInput({handleChange, handleIconClick, materialIconName, ...otherProps}) {
+    const [currentText, setCurrentText] = useState("")
+
+    const updateText = event => {
+        const {value} = event.target
+        setCurrentText(value)
+        handleChange(value)
+    }
+
+    const iconClick = () => {
+        handleIconClick(currentText)
+    }
+    
     return (
         <div className='icon-input-box'>
-            <input className='icon-input' onChange={handleChange}>
+            <input className='icon-input' onChange={updateText} {...otherProps}>
                
             </input>
-            <label className='icon-label'  onClick={handleIconClick}>
+            <label className='icon-label'  onClick={iconClick}>
                     <span className="material-icons">
                             {materialIconName}
                     </span>

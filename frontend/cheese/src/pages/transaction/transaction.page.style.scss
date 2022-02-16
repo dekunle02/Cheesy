@@ -1,0 +1,47 @@
+.transactions-page-container{
+    width: 100%;
+    .transactions-page-heading{
+        h1{
+            font-size: 3rem;
+        }
+        span{
+            font-size:1.5rem;
+        }
+        .new-trans-btn-container{
+            float: right;
+            display: inline;
+            margin-top:-2rem;
+            
+            .new-trans-btn-content{
+                padding: 0 1rem;
+                display: flex;
+                align-items: center;
+
+                .material-icons{
+                    padding-left: 1rem;
+                    font-size: 2rem;
+                }
+            }
+        }
+        
+    }
+    .transactions-page-content{
+        margin-top: 1rem;
+
+        .transaction-search{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .search-container{
+                flex-grow: 1;
+            }
+        }
+
+        .transactions-container{
+            max-height: 100%;
+            overflow: scroll;
+        }
+
+    }
+}

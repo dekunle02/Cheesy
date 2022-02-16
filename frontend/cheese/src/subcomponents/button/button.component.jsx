@@ -32,7 +32,7 @@ function OutlineButton({ children, ...otherProps }) {
 }
 
 
-function ButtonGroup({ items, defaultSelectedId, onItemSelected }) {
+function ButtonGroup({ items, defaultSelectedId, onItemSelected, tab }) {
     // Accept an array of items {id: , text: }
     // And a callBack for when the item is selected. By default, 1st item is selected
     // the id of the preselected button
@@ -43,10 +43,11 @@ function ButtonGroup({ items, defaultSelectedId, onItemSelected }) {
     }
 
     return (
-        <div className="button-group">
+        <div className={`${tab? "tab-button-group": "button-group"}`}>
             {items.map(item => (
-                <button key={item.id} onClick={() => handleSelection(item.id)} className={`button-group-btn ${item.id===selectedId ? "active":""}`}>
-                    {item.text}</button>
+                <button key={item.id} onClick={() => handleSelection(item.id)} className={`button-group-btn ${item.id === selectedId ? "active" : ""}`}>
+                    {item.text}
+                </button>
             ))}
         </div>
     )

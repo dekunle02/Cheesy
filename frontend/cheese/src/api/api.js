@@ -11,6 +11,7 @@ class ApiClient {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+
     async getTotalBalance() {
         this.sleep(0)
         return ({
@@ -43,6 +44,7 @@ class ApiClient {
             ]
         })
     }
+
 
     async getNetworthRange(startDate, granularity) {
         this.sleep(0)
@@ -121,15 +123,49 @@ class ApiClient {
         return {
             status: this.SUCCESS,
             data: [
-                { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } } },
-                { id: 2, title: "Rent", amount: 650, kind: 'outflow', period:"month", period_count:1,pot: { name: "HSBC", currency: { symbol: "£" } } },
-                { id: 3, title: "Train", amount: 250, kind: 'outflow', period:"week", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } } },
-                { id: 4, title: "Salary", amount: 2100, kind: 'inflow', period:"month", period_count:1, pot: { name: "HSBC", currency: { symbol: "£" } } },
-                { id: 5, title: "Internet", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } } },
-                { id: 6, title: "Photoshop", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Paypal", currency: { symbol: "£" } } },
+                { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } },is_recurring:true, treat_date:'06-01-2022' },
+                { id: 2, title: "Rent", amount: 650, kind: 'outflow', period:"month", period_count:1,pot: { name: "HSBC", currency: { symbol: "£" } },is_recurring:true, treat_date:'04-05-2021' },
+                { id: 3, title: "Train", amount: 250, kind: 'outflow', period:"week", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } },is_recurring:true, treat_date:'03-02-2022' },
+                { id: 4, title: "Salary", amount: 2100, kind: 'inflow', period:"month", period_count:1, pot: { name: "HSBC", currency: { symbol: "£" } },is_recurring:true, treat_date:'15-01-2022' },
+                { id: 5, title: "Internet", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } },is_recurring:true, treat_date:'5-02-2022' },
+                { id: 6, title: "Photoshop", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Paypal", currency: { symbol: "£" } }, is_recurring:true, treat_date:'04-02-2022' },
             ]
         }
     }
+
+    async getTransactionNet(startDate, granularity, currencyId) {
+        return {
+            status: this.SUCCESS,
+            data: {
+                dates: ["14-02-2022", "13-02-2022", "12-02-2022", "11-02-2022", "10-02-2022", "09-02-2022"],
+                records: {
+                    in: [100, 10, 50, 0, 0, 20],
+                    out: [10, 60, 20, 0, 5, 12]
+                }
+            }
+        }
+    }
+
+    async getAllTransactionRecords(startDate, kind, query){
+        return {
+            status: this.SUCCESS,
+            data: [
+                { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } },is_recurring:true, treat_date:'06-01-2022' },
+                { id: 2, title: "Rent", amount: 650, kind: 'outflow', period:"month", period_count:1,pot: { name: "HSBC", currency: { symbol: "£" } },is_recurring:true, treat_date:'04-05-2021' },
+                { id: 3, title: "Train", amount: 250, kind: 'outflow', period:"week", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } },is_recurring:true, treat_date:'03-02-2022' },
+                { id: 4, title: "Salary", amount: 2100, kind: 'inflow', period:"month", period_count:1, pot: { name: "HSBC", currency: { symbol: "£" } },is_recurring:true, treat_date:'15-01-2022' },
+                { id: 5, title: "Internet", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } },is_recurring:true, treat_date:'5-02-2022' },
+                { id: 6, title: "Photoshop", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Paypal", currency: { symbol: "£" } }, is_recurring:true, treat_date:'04-02-2022' },
+                { id: 7, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } },is_recurring:true, treat_date:'06-01-2022' },
+                { id: 8, title: "Rent", amount: 650, kind: 'outflow', period:"month", period_count:1,pot: { name: "HSBC", currency: { symbol: "£" } },is_recurring:true, treat_date:'04-05-2021' },
+                { id: 9, title: "Train", amount: 250, kind: 'outflow', period:"week", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } },is_recurring:true, treat_date:'03-02-2022' },
+                { id: 10, title: "Salary", amount: 2100, kind: 'inflow', period:"month", period_count:1, pot: { name: "HSBC", currency: { symbol: "£" } },is_recurring:true, treat_date:'15-01-2022' },
+                { id: 11, title: "Internet", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } },is_recurring:true, treat_date:'5-02-2022' },
+                { id: 12, title: "Photoshop", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Paypal", currency: { symbol: "£" } }, is_recurring:true, treat_date:'04-02-2022' },
+            ]
+        }
+    }
+
 
     async getAllPots() {
 
@@ -208,18 +244,7 @@ class ApiClient {
         }
     }
 
-    async getTransactionNet(startDate, granularity, currencyId) {
-        return {
-            status: this.SUCCESS,
-            data: {
-                dates: ["14-02-2022", "13-02-2022", "12-02-2022", "11-02-2022", "10-02-2022", "09-02-2022"],
-                records: {
-                    in: [100, 10, 50, 0, 0, 20],
-                    out: [10, 60, 20, 0, 5, 12]
-                }
-            }
-        }
-    }
+    
 
 
 }

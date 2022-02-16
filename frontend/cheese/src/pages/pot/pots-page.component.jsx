@@ -6,7 +6,7 @@ import { Button } from '../../subcomponents/button/button.component'
 import PotItem from '../../components/cards/pot-item.component'
 import PotBalanceChart from '../../components/charts/pot-balance/pot-balance.component'
 import RecentTransactionsCard from '../../components/cards/recent-transactions.component'
-import RecurringTransactionsCard from '../../components/cards/recurring-transactions.component'
+import { RecurringTransactionsCard } from '../../components/cards/recurring-transactions.component'
 
 function PotsPage() {
     const token = useSelector(state => state.user.userData.token)
@@ -51,7 +51,7 @@ function PotsPage() {
 
             <div className="pots-cards-container">
                 {
-                    potArr.map(pot => <PotItem key={pot.id} pot={pot} active={pot.id === potId} handleClick={() => {setPotId(pot.id)}}/>)
+                    potArr.map(pot => <PotItem key={pot.id} pot={pot} active={pot.id === potId} handleClick={() => { setPotId(pot.id) }} />)
                 }s
             </div>
             <div className="pots-page-row">
