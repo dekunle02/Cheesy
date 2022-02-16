@@ -1,0 +1,72 @@
+@import "../../sass/colors";
+@import "../../sass/dimens";
+
+.recurring-trans-container {
+  margin:2rem 0;
+
+  .recurring-trans-content {
+    border-radius: $small-border-radius;
+    padding: 1rem;
+    height: 100%;
+
+    .recurring-title {
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 1rem;
+
+      .material-icons{
+        color:$color-primary;
+        cursor: pointer;
+        transition: all .2s ease-in-out;
+
+        &:hover{
+          transform: scale(1.2);
+        }
+      }
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.rec-transaction-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem 1rem;
+  background-color: rgba($color-grey, .2);
+  margin: 1rem 0;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+
+  &:hover{
+    background-color: rgba($color-grey, .4);
+  }
+
+  .rec-title {
+    font-size: 1.8rem;
+    text-align: start;
+  }
+
+  .amount {
+    font-size: 1.8rem;
+    text-align: end;
+
+    &.inflow {
+      color: $color-green;
+    }
+    &.outflow {
+      color: $color-red;
+    }
+  }
+  .date {
+    font-size: 1.2rem;
+    text-align: start;
+  }
+}

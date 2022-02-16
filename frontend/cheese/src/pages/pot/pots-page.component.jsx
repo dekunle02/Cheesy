@@ -5,7 +5,8 @@ import useApi from '../../api/api'
 import { Button } from '../../subcomponents/button/button.component'
 import PotItem from '../../components/cards/pot-item.component'
 import PotBalanceChart from '../../components/charts/pot-balance/pot-balance.component'
-
+import RecentTransactionsCard from '../../components/cards/recent-transactions.component'
+import RecurringTransactionsCard from '../../components/cards/recurring-transactions.component'
 
 function PotsPage() {
     const token = useSelector(state => state.user.userData.token)
@@ -50,10 +51,14 @@ function PotsPage() {
 
             <div className="pots-cards-container">
                 {
-                    potArr.map(pot => <div key={pot.id} onClick={() => { setPotId(pot.id) }} className="pot-item-wrapper"><PotItem pot={pot} active={pot.id === potId} /></div>)
-                }
+                    potArr.map(pot => <PotItem key={pot.id} pot={pot} active={pot.id === potId} handleClick={() => {setPotId(pot.id)}}/>)
+                }s
             </div>
-            <PotBalanceChart potId={potId} />
+            <div className="pots-page-row">
+                <PotBalanceChart potId={potId} />
+                <RecentTransactionsCard potId={potId} />
+            </div>
+            <RecurringTransactionsCard potId={potId} />
         </div>
     )
 }

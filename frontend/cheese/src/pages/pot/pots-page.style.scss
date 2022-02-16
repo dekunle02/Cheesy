@@ -25,9 +25,12 @@
         }
         
     }
+    .pots-page-row{
+        display: flex;
+        flex-direction: row;
+    }
 
 }
-
 
 .pots-cards-container{
     display: flex;
@@ -36,8 +39,4 @@
     overflow: scroll;
     flex-wrap: nowrap;
     width:100%;
-
-    .pot-item-wrapper{
-        cursor: pointer;
-    }
 }

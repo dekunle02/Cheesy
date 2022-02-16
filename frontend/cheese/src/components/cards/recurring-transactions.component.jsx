@@ -1,27 +1,33 @@
-import './recent-transactions.style.scss'
+import './recurring-transactions.style.scss'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { FlatCard } from '../../subcomponents/card/card.component'
-import { ButtonGroup } from '../../subcomponents/button/button.component'
+import { Button, ButtonGroup } from '../../subcomponents/button/button.component'
 import { formatMoneyNumber } from '../../api/utils'
 import useApi from '../../api/api'
 
-function TransactionRow({ record }) {
-    const {date, transaction} = record
-    const {title, amount, kind, pot} = transaction
-    const sign = kind === 'inflow' ? "+" : "-" 
-    
+function TransactionRow({ transaction }) {
+    const { title, amount, kind, pot } = transaction
+    const sign = kind === 'inflow' ? "+" : "-"
+
     return (
-        <div className="transaction-row">
-            <h5 className="title">{title}</h5>
+        <div className="rec-transaction-row">
+            <span class="material-icons">
+                south_west
+            </span>
+            
+            <span class="material-icons">
+                north_east
+            </span>
+
+            <h5 className="rec-title">Rent</h5>
             <h5 className={`amount ${kind}`}>{`${sign}${pot.currency.symbol}${formatMoneyNumber(amount)}`}</h5>
-            <h5 className="date">{date} {pot.name}</h5>
         </div>
     )
 }
 
 
-function RecentTransactionsCard({potId}) {
+function RecurringTransactionsCard({ potId }) {
     const token = useSelector(state => state.user.userData.token)
     const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])
@@ -34,13 +40,7 @@ function RecentTransactionsCard({potId}) {
     ]
 
     useEffect(() => {
-        let promise = null
-        if (potId) {
-            promise = api.getRecentTransactionsByPot(potId)
-        } else {
-            promise = api.getRecentTransactions()
-        }
-        promise.then(response => {
+        api.getRecurringTransactionsByPot(potId, 'All').then(response => {
             if (response.status === api.SUCCESS) {
                 setTransactionArr(response.data)
             } else {
@@ -55,15 +55,21 @@ function RecentTransactionsCard({potId}) {
     }
 
     return (
-        <div className="recent-trans-container">
+        <div className="recurring-trans-container">
             <FlatCard block>
-                <div className="recent-trans-content">
-                    <h4 className="recent-title">Recent Transactions</h4>
+                <div className="recurring-trans-content">
+                    <div className="recurring-title">
+                        <span >Recurring Transactions</span>
+                        <span class="material-icons">
+                            add_circle
+                        </span>
+                    </div>
+
                     <div className="btn-container">
                         <ButtonGroup items={transactionButtonItems} defaultSelectedId={1} onItemSelected={onTransactionIdSelected} />
                     </div>
                     <div>
-                        {transactionArr.map(record => (<TransactionRow key={record.id} record={record} />))}
+                        {transactionArr.map(transaction => (<TransactionRow key={transaction.id} transaction={transaction} />))}
                     </div>
                 </div>
             </FlatCard>
@@ -71,4 +77,4 @@ function RecentTransactionsCard({potId}) {
     )
 }
 
-export default RecentTransactionsCard
+export default RecurringTransactionsCard

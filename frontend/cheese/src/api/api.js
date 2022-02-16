@@ -104,6 +104,33 @@ class ApiClient {
         }
     }
 
+    async getRecentTransactionsByPot(potId) {
+        return {
+            status: this.SUCCESS,
+            data: [
+                { id: 1, date: "2022-02-14", transaction: { title: "Commission", amount: 200, kind: 'inflow', pot: { name: "Monzo", currency: { symbol: "£" } } } },
+                { id: 2, date: "2022-02-14", transaction: { title: "Taxi", amount: 20, kind: 'outflow', pot: { name: "HSBC", currency: { symbol: "£" } } } },
+                { id: 3, date: "2022-02-12", transaction: { title: "Remittance", amount: 64, kind: 'inflow', pot: { name: "Credit", currency: { symbol: "£" } } } },
+                { id: 4, date: "2022-02-12", transaction: { title: "Gift", amount: 50, kind: 'inflow', pot: { name: "GTB", currency: { symbol: "€" } } } },
+                { id: 5, date: "2022-02-11", transaction: { title: "Royalties", amount: 60, kind: 'inflow', pot: { name: "Monzo", currency: { symbol: "£" } } } },
+            ]
+        }
+    }
+
+    async getRecurringTransactionsByPot(potId, kind) {
+        return {
+            status: this.SUCCESS,
+            data: [
+                { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } } },
+                { id: 2, title: "Rent", amount: 650, kind: 'outflow', period:"month", period_count:1,pot: { name: "HSBC", currency: { symbol: "£" } } },
+                { id: 3, title: "Train", amount: 250, kind: 'outflow', period:"week", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } } },
+                { id: 4, title: "Salary", amount: 2100, kind: 'inflow', period:"month", period_count:1, pot: { name: "HSBC", currency: { symbol: "£" } } },
+                { id: 5, title: "Internet", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Monzo", currency: { symbol: "£" } } },
+                { id: 6, title: "Photoshop", amount: 200, kind: 'outflow', period:"month", period_count:1, pot: { name: "Paypal", currency: { symbol: "£" } } },
+            ]
+        }
+    }
+
     async getAllPots() {
 
         return {
