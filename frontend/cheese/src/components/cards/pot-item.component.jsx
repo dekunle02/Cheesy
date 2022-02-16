@@ -1,16 +1,22 @@
 import './pot-item.style.scss'
 import { Card, FloatCard } from '../../subcomponents/card/card.component'
-import {formatMoneyNumber} from '../../api/utils'
+import { formatMoneyNumber } from '../../api/utils'
+import IconDropdown from '../../subcomponents/dropdown/icon-dropdown.component'
 
 function PotItem({ pot, active, handleClick }) {
     const colors = ["#fcca46", "#2e702f", "#76c893", "#fcca46", "#A300D6", "#2B908F", "#13D8AA"]
     let potColor = pot.color_code
-    
-    if (potColor === ""){
+
+    if (potColor === "") {
         potColor = colors[Math.floor(Math.random() * colors.length)];
     }
 
-    const potAmount =  `${pot.currency.symbol} ${formatMoneyNumber(pot.amount)}`
+    const potAmount = `${pot.currency.symbol} ${formatMoneyNumber(pot.amount)}`
+
+    const potOptions = [{id:1, text:"Edit"},{id:2, text:"Make a transaction"}, {id:3, text:"Change color"}]
+    const onPotOtionSelected = (optionId) => {
+
+    }
 
     return (
         <div className={`${active ? "active" : ""} pot-item-container`}>
@@ -19,9 +25,12 @@ function PotItem({ pot, active, handleClick }) {
                     <FloatCard>
                         <div className="pot-item-content" onClick={handleClick}>
                             <div className="pot-item-header">
-                                <div className="pot-icon" style={{ backgroundColor: potColor}}></div>
+                                <div className="pot-icon" style={{ backgroundColor: potColor }}></div>
                                 <span className="pot-title">{pot.name}</span>
-                                <span className="material-icons" style={{ color: potColor}}>more_vert</span>
+                                {/* <span className="material-icons" style={{ color: potColor }}>more_vert</span> */}
+                                <span className="dropdown-icon">
+                                    <IconDropdown items={potOptions} iconColor={potColor} onItemSelected={onPotOtionSelected} iconName="more_vert" />
+                                </span>
                             </div>
                             <h2 className="pot-amount">{potAmount}</h2>
                         </div>
@@ -32,8 +41,7 @@ function PotItem({ pot, active, handleClick }) {
                             <div className="pot-item-header">
                                 <div className={`${active ? "active" : ""} pot-icon`} style={{ backgroundColor: potColor }}></div>
                                 <span className="pot-title">{pot.name}</span>
-                                <span className="material-icons"  style={{ color: potColor}}>more_vert</span>
-
+                                <span className="material-icons" style={{ color: potColor }}>more_vert</span>
                             </div>
                             <h2 className="pot-amount">{potAmount}</h2>
                         </div>

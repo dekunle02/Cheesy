@@ -1,7 +1,47 @@
 @import "../../sass/colors";
 @import "../../sass/dimens";
 
-.dropdown{
+.dropdown {
+  border-radius: $small-border-radius;
+  padding: 0.2rem;
+}
+
+.icon-dropdown {
+  position: relative;
+  display: inline-block;
+  cursor:default;
+
+  &:hover {
+    display: block;
+
+    .dropdown-content {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      align-items: center;
+    }
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    padding: 1rem 0;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
     border-radius: $small-border-radius;
-    padding:.2rem;
+
+    .item {
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.1rem 1rem;
+      display: grid;
+      align-items: center;
+      width: 100%;
+
+      &:hover {
+        background-color: rgba($color-secondary, 0.5);
+      }
+    }
+  }
 }
