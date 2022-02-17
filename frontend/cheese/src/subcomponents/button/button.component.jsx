@@ -1,10 +1,13 @@
 import "./button.style.scss"
 import { useState } from 'react'
 
-function BaseButton({ children, handleClick, text, outline, inverse, block, ...otherProps }) {
+function BaseButton({ children, handleClick, text, outline, inverse, block, inactive, ...otherProps }) {
 
     return (
-        <button className={`base-button ${text ? 'text-button' : ''} ${inverse ? 'inverse' : ''} ${block ? 'block' : ''} ${outline ? 'outline-button' : ''}`} onClick={handleClick} {...otherProps}>
+        <button
+            className={`base-button ${text ? 'text-button' : ''}  ${inactive ? 'inactive' : ''} ${inverse ? 'inverse' : ''} ${block ? 'block' : ''} ${outline ? 'outline-button' : ''}`} 
+            onClick={handleClick} 
+            {...otherProps}>
             {children}
         </button>
     )
@@ -43,7 +46,7 @@ function ButtonGroup({ items, defaultSelectedId, onItemSelected, tab }) {
     }
 
     return (
-        <div className={`${tab? "tab-button-group": "button-group"}`}>
+        <div className={`${tab ? "tab-button-group" : "button-group"}`}>
             {items.map(item => (
                 <button key={item.id} onClick={() => handleSelection(item.id)} className={`button-group-btn ${item.id === selectedId ? "active" : ""}`}>
                     {item.text}

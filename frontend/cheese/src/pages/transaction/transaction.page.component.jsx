@@ -7,9 +7,14 @@ import { ButtonGroup } from '../../subcomponents/button/button.component'
 import { IconInput } from '../../subcomponents/form-input/form-input.component'
 import { TransactionRow } from '../../components/cards/recurring-transactions.component'
 
+import TransactionDetailForm from '../../components/forms/transaction-detail/transaction-detail.component'
+
 function TransactionsPage() {
     const token = useSelector(state => state.user.userData.token)
     const api = useApi(token)
+
+    const [canShowNewTrans, setCanShowNewTrans] = useState(false)
+
     const [transactionsArr, setTransactionsArr] = useState([])
     // const [sortId, setSortId] = useState(1)
   
@@ -46,12 +51,13 @@ function TransactionsPage() {
 
     return (
         <div className="transactions-page-container">
+            {canShowNewTrans && <TransactionDetailForm canShow={canShowNewTrans} setCanShow={setCanShowNewTrans} />}
             <div className="transactions-page-heading">
                 <h1>Transactions 💸</h1>
                 <span>See all your transaction records here</span>
 
                 <div className='new-trans-btn-container'>
-                    <Button inverse >
+                    <Button inverse onClick={() => setCanShowNewTrans(true)}>
                         <div className='new-trans-btn-content'>
                             <span>New Transaction</span>
                             <span className="material-icons">add_box</span>

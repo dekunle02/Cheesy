@@ -1,0 +1,29 @@
+.trans-detail-container {
+  width: 40vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10rem 2rem;
+
+  .trans-detail-title {
+    font-size: 3rem;
+    text-align: center;
+  }
+  .trans-btn-grp-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .trans-form {
+    .trans-form-submit-container {
+      margin: 0 4rem;
+      margin-top: 4rem;
+
+      .form-message {
+        text-align: center;
+        font-size: 2rem;
+        margin-top: 1rem;
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import './form-input.style.scss'
-import {useState} from 'react'
+import { useState } from 'react'
 
 /**
  * 
@@ -11,8 +11,8 @@ import {useState} from 'react'
  * @returns 
  */
 
-function FormInput({handleChange, label, showError, errorMessage, ...otherProps}) {    
-    
+function FormInput({ handleChange, label, showError, errorMessage, ...otherProps }) {
+
     return (
         <div className='form-input-box'>
             <label className='form-input-label'>{label}</label>
@@ -23,11 +23,11 @@ function FormInput({handleChange, label, showError, errorMessage, ...otherProps}
 }
 
 
-function IconInput({handleChange, handleIconClick, materialIconName, ...otherProps}) {
+function IconInput({ handleChange, handleIconClick, materialIconName, ...otherProps }) {
     const [currentText, setCurrentText] = useState("")
 
     const updateText = event => {
-        const {value} = event.target
+        const { value } = event.target
         setCurrentText(value)
         handleChange(value)
     }
@@ -35,24 +35,21 @@ function IconInput({handleChange, handleIconClick, materialIconName, ...otherPro
     const iconClick = () => {
         handleIconClick(currentText)
     }
-    
+
     return (
         <div className='icon-input-box'>
-            <input className='icon-input' onChange={updateText} {...otherProps}>
-               
-            </input>
-            <label className='icon-label'  onClick={iconClick}>
-                    <span className="material-icons">
-                            {materialIconName}
-                    </span>
-                </label>
+            <input className='icon-input' onChange={updateText} {...otherProps}/>
+            <label className='icon-label' onClick={iconClick}>
+                <span className="material-icons">
+                    {materialIconName}
+                </span>
+            </label>
         </div>
     )
 
 }
 
 
-export {FormInput, IconInput}
+export { FormInput, IconInput }
 
 
-    

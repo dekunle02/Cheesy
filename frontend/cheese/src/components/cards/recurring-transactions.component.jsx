@@ -103,7 +103,7 @@ function RecurringTransactionsCard({ potId }) {
                     </div>
 
                     <div className="btn-container">
-                        <ButtonGroup items={sortButtonItems} defaultSelectedId={1} onItemSelected={onSortIdSelected} />
+                        <ButtonGroup tab items={sortButtonItems} defaultSelectedId={1} onItemSelected={onSortIdSelected} />
                     </div>
                     {transactionArr.length > 0 ?
                         <div>

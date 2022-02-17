@@ -166,6 +166,27 @@ class ApiClient {
         }
     }
 
+    async getRecurringTransactionById(transactionId){
+        return {
+            status: this.SUCCESS,
+            data: { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } },is_recurring:true, treat_date:'06-01-2022' },
+        }
+    }
+
+    async postNewTransaction(transactionData) {
+        return {
+            status: this.SUCCESS
+        }
+    }
+
+    async patchRecurringTransaction(transactionId, transactionData) {
+        return{
+            status: this.SUCCESS
+        }
+    }
+
+
+
 
     async getAllPots() {
 
@@ -200,6 +221,25 @@ class ApiClient {
         return {
             status: this.SUCCESS,
             data: data
+        }
+    }
+
+    async postNewPot(potData) {
+        this.sleep(2000)
+        console.log("postNewPot", potData)
+
+        return {
+            status: this.SUCCESS,
+            data:{ id: Math.floor(Math.random() * 50), ...potData }
+        }
+    }
+    async patchPot(potId, potData){
+        this.sleep(2000)
+        console.log("patchPot", potData)
+
+        return {
+            status: this.SUCCESS,
+            data:{potData}
         }
     }
 

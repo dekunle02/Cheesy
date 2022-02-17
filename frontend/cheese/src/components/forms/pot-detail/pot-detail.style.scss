@@ -1,0 +1,27 @@
+.pot-detail-container {
+    width: 40vw;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10rem 2rem;
+ 
+    .pot-detail-title{
+        font-size: 3rem;
+       
+    }
+  
+    .pot-form{
+
+        .pot-form-submit-container{
+            margin: 0 4rem;
+            margin-top: 4rem;
+            
+            .form-message{
+                text-align: center;
+                font-size: 2rem;
+                margin-top: 1rem;
+            }
+        }
+    }
+  }
+  

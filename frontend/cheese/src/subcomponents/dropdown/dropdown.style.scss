@@ -1,9 +1,19 @@
 @import "../../sass/colors";
 @import "../../sass/dimens";
 
+.dropdown-container{
+  &.block{
+    display:block;
+  }
+}
+
 .dropdown {
   border-radius: $small-border-radius;
   padding: 0.2rem;
+  &.block{
+    display:block;
+    width: 100%;
+  }
 }
 
 .icon-dropdown {

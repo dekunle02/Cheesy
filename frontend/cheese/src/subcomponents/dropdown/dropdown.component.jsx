@@ -1,6 +1,6 @@
 import "./dropdown.style.scss"
 
-function Dropdown({ title, items, onItemSelected, defaultSelectedId }) {
+function Dropdown({ title, items, onItemSelected, defaultSelectedId, block }) {
     let defaultSelectedItem = items.find(item => (item.id === defaultSelectedId))
 
     const handleChange = event => {
@@ -9,10 +9,10 @@ function Dropdown({ title, items, onItemSelected, defaultSelectedId }) {
     }
 
     return (
-        <div>
+        <div className={`${block ? "block": ""} drop-container`}>
             {
                 defaultSelectedItem ?
-                    <select className="dropdown" name={title} id={title} onChange={handleChange} defaultValue={defaultSelectedItem.text} >
+                    <select className={`${block ? "block": ""} dropdown`} name={title} id={title} onChange={handleChange} defaultValue={defaultSelectedItem.text} >
                         {items.map((item) => <option key={item.id} value={item.text}>{item.text}</option>)}
                     </select>
                     : ""
