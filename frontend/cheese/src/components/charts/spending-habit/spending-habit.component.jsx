@@ -66,7 +66,7 @@ function SpendingHabitChart() {
                 
             },
             stroke: {
-                curve: 'stepline',
+                curve: 'smooth',
               },
             legend: {
                 show: true,

@@ -6,7 +6,7 @@ import { ButtonGroup } from '../../subcomponents/button/button.component'
 import { formatMoneyNumber } from '../../api/utils'
 import useApi from '../../api/api'
 
-function TransactionRow({ transaction, handleClick }) {
+function TransactionRow({ transaction, handleClick, handleDelete }) {
     const { id, title, amount, kind, pot, is_recurring, treat_date, period, period_count } = transaction
     const sign = kind === 'inflow' ? "+" : "-"
 
@@ -38,6 +38,8 @@ function TransactionRow({ transaction, handleClick }) {
         }
     }
 
+
+
     return (
         <div className="rec-transaction-row" onClick={() => handleClick(id)}>
             {kindLogo()}
@@ -46,6 +48,11 @@ function TransactionRow({ transaction, handleClick }) {
             {recurringLogo()}
             <h5 className={`amount ${kind}`}>{`${sign}${pot.currency.symbol}${formatMoneyNumber(amount)}`}</h5>
             <span className="treat-date">{treat_date}</span>
+            <span className="material-icons delete" onClick={event => {
+                event.stopPropagation()
+                handleDelete(id)}}>
+                {`${is_recurring ? 'backspace': ""}`}
+            </span>
 
         </div>
     )
@@ -55,7 +62,7 @@ function TransactionRow({ transaction, handleClick }) {
 
 
 
-function RecurringTransactionsCard({ potId, handleItemClick ,handleNewTransactionClick}) {
+function RecurringTransactionsCard({ potId, handleItemClick, handleNewTransactionClick }) {
     const token = useSelector(state => state.user.userData.token)
     const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])

@@ -89,7 +89,7 @@ function PotBalanceChart({ potId }) {
             }
             ,
             stroke: {
-                curve: 'stepline',
+                curve: 'smooth',
             },
             colors: [potColor, '#E91E63']
             ,

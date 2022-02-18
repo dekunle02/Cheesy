@@ -113,7 +113,7 @@ function NetworthCard() {
             }
             ,
             stroke: {
-                curve: 'stepline',
+                curve: 'smooth',
             },
             colors: ['#60ad5e', '#E91E63']
             ,

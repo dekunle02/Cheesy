@@ -178,6 +178,12 @@ class ApiClient {
         }
     }
 
+    async deleteTransaction(transactionId) {
+        return {
+            status: this.SUCCESS
+        }
+    }
+
     async patchRecurringTransaction(transactionId, transactionData) {
         console.log(transactionData)
         await this.sleep(2000)

@@ -37,7 +37,7 @@
 .rec-transaction-row {
   display: grid;
   grid-template-rows: min-content min-content;
-  grid-template-columns: min-content .5fr 1fr min-content .3fr;
+  grid-template-columns: min-content .5fr 1fr min-content .3fr min-content ;
 
   align-items: center;
   padding: 0.5rem 1rem;
@@ -73,6 +73,14 @@
     grid-row: 1/span 2;
   }
 
+  .delete{
+    text-align: end;
+    align-self: center;
+    grid-column: 6;
+    grid-row: 1/span 2;
+    cursor: pointer;
+  }
+
   .rec-title {
     font-size: 1.8rem;
     text-align: start;
@@ -93,7 +101,7 @@
 
   .amount {
     font-size: 1.8rem;
-    text-align: end;
+    text-align: center;
     align-self: center;
     grid-column: 5;
     grid-row: 1 / span 2 ;

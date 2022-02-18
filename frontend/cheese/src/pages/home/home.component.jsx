@@ -42,7 +42,7 @@ function HomePage() {
                         <div className="home-main-message">
                             <span>Managing your money</span>
                             <span>has never been easier!</span>
-                            <span className="home-sub-message">Regain complete control over all your money. You decide how any </span>
+                            <span className="home-sub-message">Regain complete control over all your money. Your money, your rules.</span>
                         </div>
 
                         <div className='home-register-button-container'>

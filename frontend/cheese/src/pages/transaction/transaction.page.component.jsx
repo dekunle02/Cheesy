@@ -8,6 +8,7 @@ import { IconInput } from '../../subcomponents/form-input/form-input.component'
 import { TransactionRow } from '../../components/cards/recurring-transactions.component'
 
 import TransactionDetailForm from '../../components/forms/transaction-detail/transaction-detail.component'
+import DeleteTransactionCard from '../../components/dialogs/delete/delete-transaction.component'
 
 function TransactionsPage() {
     const token = useSelector(state => state.user.userData.token)
@@ -15,6 +16,7 @@ function TransactionsPage() {
 
     const [canShowNewTrans, setCanShowNewTrans] = useState(false)
     const [canShowEditTrans, setCanShowEditTrans] = useState(false)
+    const [canShowDeleteTrans, setCanShowDeleteTrans] = useState(false)
 
     const [selectedTrans, setSelectedTrans] = useState("")
 
@@ -53,10 +55,13 @@ function TransactionsPage() {
         setCanShowEditTrans(true)
     }
 
+
     return (
         <div className="transactions-page-container">
             {canShowNewTrans && <TransactionDetailForm canShow={canShowNewTrans} setCanShow={setCanShowNewTrans} />}
             {canShowEditTrans && <TransactionDetailForm transactionId={selectedTrans} canShow={canShowEditTrans} setCanShow={setCanShowEditTrans} />}
+            {canShowDeleteTrans && <DeleteTransactionCard transactionId={selectedTrans} canShow={canShowDeleteTrans} setCanShow={setCanShowDeleteTrans} />}
+            
             <div className="transactions-page-heading">
                 <h1>Transactions 💸</h1>
                 <span>See all your transaction records here</span>
@@ -65,7 +70,7 @@ function TransactionsPage() {
                     <Button inverse onClick={() => setCanShowNewTrans(true)}>
                         <div className='new-trans-btn-content'>
                             <span>New Transaction</span>
-                            <span className="material-icons">add_box</span>
+                            <span className="material-icons">rocket_launch</span>
                         </div>
                     </Button>
                 </div>
@@ -87,7 +92,7 @@ function TransactionsPage() {
                 </div>
 
                 <div className="transactions-container">
-                    { transactionsArr.map(t => <TransactionRow key={t.id} transaction={t} handleClick={onTransactionItemClick}/>)}
+                    { transactionsArr.map(t => <TransactionRow key={t.id} transaction={t} handleClick={onTransactionItemClick} handleDelete={() => setCanShowDeleteTrans(true)}/>)}
                 </div>
 
             </div>
