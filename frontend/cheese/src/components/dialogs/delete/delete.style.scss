@@ -1,0 +1,23 @@
+.delete-container{
+    width: 40vw;
+    height: 100%;
+    padding: 3rem 4rem;
+
+    .delete-title{
+        font-size: 2.5rem;
+        text-align: center;
+    }
+    .delete-message{
+        font-size: 2rem;
+    }
+
+    .delete-buttons-container{
+        display:grid;
+        margin-top: 2rem;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 2rem;
+        flex-direction:row;
+        justify-content: space-around;
+    }
+
+}

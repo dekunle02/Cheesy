@@ -4,8 +4,8 @@ import { ReactComponent as Logo } from '../../assets/logo.svg'
 import { Button } from '../../subcomponents/button/button.component'
 import { Card } from '../../subcomponents/card/card.component'
 
-import SignInForm from '../../components/forms/signin-form/signin-form.component'
-import SignUpForm from '../../components/forms/signup-form/signup-form.component'
+import SignInForm from '../../components/forms/auth-form/signin-form.component'
+import SignUpForm from '../../components/forms/auth-form/signup-form.component'
 
 function HomePage() {
     const [canShowSignInForm, setShowSignInForm] = useState(false)

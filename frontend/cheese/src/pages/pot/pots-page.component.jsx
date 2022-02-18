@@ -8,6 +8,9 @@ import PotBalanceChart from '../../components/charts/pot-balance/pot-balance.com
 import RecentTransactionsCard from '../../components/cards/recent-transactions.component'
 import { RecurringTransactionsCard } from '../../components/cards/recurring-transactions.component'
 import PotDetailForm from '../../components/forms/pot-detail/pot-detail.component'
+import TransactionDetailForm from '../../components/forms/transaction-detail/transaction-detail.component'
+import DeletePotCard from '../../components/dialogs/delete/delete-pot.component'
+
 
 function PotsPage() {
     const token = useSelector(state => state.user.userData.token)
@@ -15,6 +18,11 @@ function PotsPage() {
 
     const [canShowPotDetailForm, setShowPotDetailForm] = useState(false)
     const [canShowNewPotForm, setShowNewPotForm] = useState(false)
+    const [selectedTrans, setSelectedTrans] = useState("")
+    const [canShowPotDelete, setShowPotDelete] = useState(false)
+
+    const [canShowNewTrans, setCanShowNewTrans] = useState(false)
+    const [canShowEditTrans, setCanShowEditTrans] = useState(false)
 
     const [potArr, setPotArr] = useState([])
     const [potId, setPotId] = useState(null)
@@ -36,12 +44,21 @@ function PotsPage() {
         setShowNewPotForm(true)
     }
 
+    const onTransactionItemClick = id => {
+        setSelectedTrans(id)
+        setCanShowEditTrans(true)
+    }
+
 
     return (
         <div className="pots-page-container">
-            
+
             {canShowNewPotForm && <PotDetailForm canShow={canShowNewPotForm} setCanShow={setShowNewPotForm} />}
             {canShowPotDetailForm && <PotDetailForm canShow={canShowPotDetailForm} setCanShow={setShowPotDetailForm} potId={potId} />}
+            {canShowPotDelete && <DeletePotCard canShow={canShowPotDelete} setCanShow={setShowPotDelete} potId={potId} />}
+
+            {canShowNewTrans && <TransactionDetailForm canShow={canShowNewTrans} setCanShow={setCanShowNewTrans} />}
+            {canShowEditTrans && <TransactionDetailForm transactionId={selectedTrans} canShow={canShowEditTrans} setCanShow={setCanShowEditTrans} />}
 
             <div className="pots-page-heading">
                 <h1>Pots 💳</h1>
@@ -60,14 +77,23 @@ function PotsPage() {
 
             <div className="pots-cards-container">
                 {
-                    potArr.map(pot => <PotItem handleEdit = {() => setShowPotDetailForm(true)} key={pot.id} pot={pot} active={pot.id === potId} handleClick={() => { setPotId(pot.id) }} />)
-                }s
+                    potArr.map(pot => (
+                        <PotItem
+                            handleEdit={() => setShowPotDetailForm(true)}
+                            handleDelete={() => setShowPotDelete(true)}
+                            handleTransaction = {() => setCanShowNewTrans(true)}
+                            key={pot.id}
+                            pot={pot} 
+                            active={pot.id === potId} 
+                            handleClick={() => { setPotId(pot.id) }} 
+                            />))
+                }
             </div>
             <div className="pots-page-row">
                 <PotBalanceChart potId={potId} />
                 <RecentTransactionsCard potId={potId} />
             </div>
-            <RecurringTransactionsCard potId={potId} />
+            <RecurringTransactionsCard potId={potId} handleNewTransactionClick={() => setCanShowNewTrans(true)} handleItemClick={onTransactionItemClick} />
         </div>
     )
 }

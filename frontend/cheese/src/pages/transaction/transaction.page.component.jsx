@@ -15,6 +15,7 @@ function TransactionsPage() {
 
     const [canShowNewTrans, setCanShowNewTrans] = useState(false)
     const [canShowEditTrans, setCanShowEditTrans] = useState(false)
+
     const [selectedTrans, setSelectedTrans] = useState("")
 
     const [transactionsArr, setTransactionsArr] = useState([])
@@ -48,7 +49,6 @@ function TransactionsPage() {
     }
 
     const onTransactionItemClick = id => {
-        console.log("selected", id)
         setSelectedTrans(id)
         setCanShowEditTrans(true)
     }

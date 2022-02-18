@@ -3,7 +3,7 @@ import { Card, FloatCard } from '../../subcomponents/card/card.component'
 import { formatMoneyNumber } from '../../api/utils'
 import IconDropdown from '../../subcomponents/dropdown/icon-dropdown.component'
 
-function PotItem({ pot, active, handleClick, handleEdit }) {
+function PotItem({ pot, active, handleClick, handleEdit, handleDelete, handleTransaction }) {
     const colors = ["#fcca46", "#2e702f", "#76c893", "#fcca46", "#A300D6", "#2B908F", "#13D8AA"]
     let potColor = pot.color_code
 
@@ -17,6 +17,10 @@ function PotItem({ pot, active, handleClick, handleEdit }) {
     const onPotOtionSelected = (optionId) => {
         if (optionId === 1) {
             handleEdit()
+        } else if (optionId === 2) {
+            handleTransaction()
+        } else {
+            handleDelete()
         }
     }
 

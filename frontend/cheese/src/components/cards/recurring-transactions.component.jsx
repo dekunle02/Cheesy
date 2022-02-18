@@ -38,7 +38,6 @@ function TransactionRow({ transaction, handleClick }) {
         }
     }
 
-
     return (
         <div className="rec-transaction-row" onClick={() => handleClick(id)}>
             {kindLogo()}
@@ -56,7 +55,7 @@ function TransactionRow({ transaction, handleClick }) {
 
 
 
-function RecurringTransactionsCard({ potId }) {
+function RecurringTransactionsCard({ potId, handleItemClick ,handleNewTransactionClick}) {
     const token = useSelector(state => state.user.userData.token)
     const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])
@@ -82,14 +81,6 @@ function RecurringTransactionsCard({ potId }) {
         // setSortId(id)
         console.log(id)
     }
-    const handleNewTransactionClick = () => {
-        console.log("new transaction")
-    }
-
-    const handleTransactionRowClick = id => {
-        console.log("transaction clicked => ", id)
-    }
-
 
     return (
         <div className="recurring-trans-container">
@@ -107,7 +98,7 @@ function RecurringTransactionsCard({ potId }) {
                     </div>
                     {transactionArr.length > 0 ?
                         <div>
-                            {transactionArr.map(transaction => (<TransactionRow key={transaction.id} transaction={transaction} handleClick={handleTransactionRowClick} />))}
+                            {transactionArr.map(transaction => (<TransactionRow key={transaction.id} transaction={transaction} handleClick={handleItemClick} />))}
                         </div>
                         :
                         <h2>Nothing to see yet"</h2>

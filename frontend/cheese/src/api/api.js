@@ -34,7 +34,7 @@ class ApiClient {
     }
 
     async getAllCurrencies() {
-        this.sleep(0)
+        await this.sleep(0)
         return ({
             status: this.SUCCESS,
             data: [
@@ -189,7 +189,6 @@ class ApiClient {
 
 
 
-
     async getAllPots() {
 
         return {
@@ -244,6 +243,15 @@ class ApiClient {
             data:{potData}
         }
     }
+
+    async deletePot(potId){
+        this.sleep(2000)
+        return {
+            status: this.SUCCESS,
+        }
+    }
+
+
 
     async getPotRange(potId, startDate, granularity) {
         let ranges = null
