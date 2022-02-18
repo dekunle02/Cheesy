@@ -1,9 +1,12 @@
+@import "../../../sass/colors";
+
 .trans-detail-container {
-  width: 40vw;
+  width: 50vw;
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 10rem 2rem;
+  padding: 5rem 2rem;
+  transition: 1s;
 
   .trans-detail-title {
     font-size: 3rem;
@@ -15,15 +18,80 @@
   }
 
   .trans-form {
+
+    .trans-form-input-box {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 .5rem;
+        margin-top: 2rem;
+
+      label {
+        color: $color-black;
+        font-size: 1.5rem;
+        font-weight: bold;         
+      }
+
+      .slider {
+        position: relative;
+        width: 4rem;
+        height: 2rem;
+        border-radius: 1rem;
+        outline: none;
+        -webkit-appearance: none;
+        background-color: $color-grey;
+        transition: 0.7s;
+        cursor: pointer;
+
+        &::before {
+          position: absolute;
+          content: "";
+          margin-left: 0.2rem;
+          margin-top: 0.1rem;
+          height: 1.8rem;
+          width: 1.8rem;
+          border-radius: 50px;
+          background-color: $color-white;
+          transition: 0.7s;
+        }
+
+        &:checked {
+          background-color: $color-secondary;
+
+          &::before {
+            left: 1.9rem;
+            transition: 0.7s;
+          }
+        }
+      }
+    }
+
+    .period-container{
+        display: flex;
+        flex-direction: row;
+        padding-top: 2rem;
+
+        span{
+            color: $color-black;
+            font-size: 1.5rem;
+            font-weight: bold;    
+        }
+        input{
+            width: 4rem;
+            margin: 0 2rem;
+        }
+
+    }
+
     .trans-form-submit-container {
       margin: 0 4rem;
       margin-top: 4rem;
+    }
 
-      .form-message {
-        text-align: center;
-        font-size: 2rem;
-        margin-top: 1rem;
-      }
+    .form-message {
+      text-align: center;
+      font-size: 2rem;
+      margin-top: 1rem;
     }
   }
 }

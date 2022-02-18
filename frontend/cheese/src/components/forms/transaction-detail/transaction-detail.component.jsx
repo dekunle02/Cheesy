@@ -17,28 +17,46 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
     const token = useSelector(state => state.user.userData.token)
     const api = useApi(token)
 
+    const [recurring, setRecurring] = useState(false)
+    const [formState, setFormState] = useState(1)
+    const [period, setPeriod] = useState(1)
+    const [potArr, setPotArr] = useState([])
+    const [fromPotId, setFromPotId] = useState("")
+    const [toPotId, setToPotId] = useState("")
+    const [title, setTitle] = useState("")
+    const [amount, setAmount] = useState("")
+    const [startDate, setStartDate] = useState("")
+    const [periodNumber, setPeriodNumber] = useState(1)
+    const [loadState, setLoadState] = useState(loadStates.FINISHED)
+    const [formMessage, setFormMessage] = useState("")
+
+
     const FormStates = [
         { id: 1, text: "Income", data: "inflow" },
         { id: 2, text: "Expense", data: "outflow" },
         { id: 3, text: "Transfer", data: "transfer" }
     ]
-    const [formState, setFormState] = useState(1)
     const onFormItemSelected = id => {
+        setRecurring(false)
         setFormState(id)
     }
-
     const periodOptions = [
         { id: 1, text: 'day' },
         { id: 2, text: 'week' },
         { id: 3, text: 'month' },
         { id: 4, text: 'year' }
     ]
-    const [period, setPeriod] = useState(1)
     const onPeriodOptionSelected = id => {
         setPeriod(id)
     }
+    const potOptions = potArr.map(pot => ({ id: pot.id, text: pot.name }))
+    const onFromPotOptionSelected = id => {
+        setFromPotId(id)
+    }
+    const onToPotOptionSelected = id => {
+        setToPotId(id)
+    }
 
-    const [potArr, setPotArr] = useState([])
     useEffect(() => {
         api.getAllPots().then(response => {
             if (response.status === api.SUCCESS) {
@@ -52,28 +70,6 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
             }
         })
     }, [token])
-    const [fromPotId, setFromPotId] = useState("")
-    const [toPotId, setToPotId] = useState("")
-    const potOptions = potArr.map(pot => ({ id: pot.id, text: pot.name }))
-    const onFromPotOptionSelected = id => {
-        setFromPotId(id)
-    }
-    const onToPotOptionSelected = id => {
-        setToPotId(id)
-    }
-
-
-    //Form Fields
-    const [title, setTitle] = useState("")
-
-    const [amount, setAmount] = useState("")
-    const [recurring, setRecurring] = useState(false)
-    const [startDate, setStartDate] = useState(false)
-    const [periodNumber, setPeriodNumber] = useState(1)
-
-    const [loadState, setLoadState] = useState(loadStates.FINISHED)
-    const [formMessage, setFormMessage] = useState("")
-
 
     useEffect(() => {
         if (!transactionId) {
@@ -86,6 +82,7 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
                 setAmount(amount)
                 setRecurring(is_recurring)
                 setFromPotId(pot.id)
+                setToPotId(pot.id)
                 setStartDate(treat_date)
             } else {
                 alert("Error fetching Pot")
@@ -105,11 +102,11 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
             case "amount":
                 setAmount(value)
                 break
-            case "recurring":
-                setRecurring(value)
-                break
             case "periodNumber":
                 setPeriodNumber(value)
+                break
+            case "date":
+                setStartDate(value)
                 break
             default:
                 break;
@@ -118,31 +115,48 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
 
     const handleSubmitTransfer = event => {
         event.preventDefault()
-        console.log("SubmitPressed")
         setLoadState(loadStates.LOADING)
         if (transactionId) {
-            // api.patchPot(potId, {
-            //     name: name, currency: currencyId, amount: amount, color_code: colorCode
-            // }).then(response => {
-            //     if (response.status === api.SUCCESS) {
-            //         setFormMessage("Pot updated successfully")
-            //     } else {
-            //         setFormMessage("Pot not updated..")
-            //     }
-            // })
+            api.patchRecurringTransaction(transactionId, {
+                title: title,
+                amount: amount,
+                fromPot: fromPotId,
+                toPot: toPotId,
+                recurring: recurring,
+                startDate: startDate,
+                period: (periodOptions.find(p => p.id === period)).text,
+                periodNumber: periodNumber,
+                kind: (FormStates.find(state => state.id === formState)).data
+            }).then(response => {
+                if (response.status === api.SUCCESS) {
+                    alert("Transaction updated successfully")
+                } else {
+                    alert("Transaction not updated..")
+                }
+                otherProps.setCanShow(false)
+            })
         }
         else {
-            // api.postNewPot({
-            //     name: name, currency: currencyId, amount: amount, color_code: colorCode
-            // }).then(response => {
-            //     if (response.status === api.SUCCESS) {
-            //         setFormMessage("Pot created successfully")
-            //     } else {
-            //         setFormMessage("Pot not created..")
-            //     }
-            // })
+            api.postNewTransaction({
+                title: title,
+                amount: amount,
+                fromPot: fromPotId,
+                toPot: toPotId,
+                recurring: recurring,
+                startDate: startDate,
+                period: (periodOptions.find(p => p.id === period)).text,
+                periodNumber: periodNumber,
+                kind: (FormStates.find(state => state.id === formState)).data
+            }).then(response => {
+                setLoadState(loadStates.FINISHED)
+                if (response.status === api.SUCCESS) {
+                    alert("Transaction created successfully")
+                } else {
+                    alert("Transaction not created..")
+                }
+                otherProps.setCanShow(false)
+            })
         }
-        setLoadState(loadStates.FINISHED)
     }
 
     const transferForm = (
@@ -166,17 +180,38 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
                 handleChange={handleChange}
                 placeholder="How much are you transfering?"
                 required />
+
             <FormInput
                 type="text"
                 name="title"
                 label="Remarks"
                 value={title}
                 handleChange={handleChange}
-                placeholder="a word or two about the nature of the transaction"
+                placeholder="...short description..."
                 required
             />
 
+            <FormInput
+                type="date"
+                name="date"
+                label="When should the transaction start?"
+                value={startDate}
+                handleChange={handleChange}
+                placeholder=""
+            />
 
+            <div className='trans-form-input-box'>
+                <label>Will this be a recurring transaction?</label>
+                <input type="checkbox" className="slider" name="recurring" onChange={() => setRecurring(!recurring)} />
+            </div>
+
+            {recurring &&
+                <div className="period-container">
+                    <span>It should repeat every</span>
+                    <input type="number" />
+                    <Dropdown title='period' items={periodOptions} defaultSelectedId={period} onItemSelected={onPeriodOptionSelected} />
+                </div>
+            }
 
             <div className='trans-form-submit-container'>
                 <Button block inactive={loadState === loadStates.LOADING} handleClick={handleSubmitTransfer}> SUBMIT </Button>
@@ -188,11 +223,115 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
     )
 
     const inflowForm = (
-        <div>Hello World</div>
+        <form className='trans-form'>
+
+            <div className='form-input-box'>
+                <label className='form-input-label'>Choose the Pot you are putting money into</label>
+                <Dropdown block title='toPot' items={potOptions} defaultSelectedId={toPotId} onItemSelected={onToPotOptionSelected} />
+            </div>
+
+            <FormInput
+                type="number"
+                name="amount"
+                label="Amount"
+                value={amount}
+                handleChange={handleChange}
+                placeholder="How much are you transfering?"
+                required />
+
+            <FormInput
+                type="text"
+                name="title"
+                label="Remarks"
+                value={title}
+                handleChange={handleChange}
+                placeholder="...short description..."
+                required
+            />
+            <FormInput
+                type="date"
+                name="date"
+                label="When should the transaction start?"
+                value={startDate}
+                handleChange={handleChange}
+            />
+
+            <div className='trans-form-input-box'>
+                <label>Will this be a recurring transaction?</label>
+                <input type="checkbox" className="slider" name="recurring" onChange={() => setRecurring(!recurring)} />
+            </div>
+
+            {recurring &&
+                <div className="period-container">
+                    <span>It should repeat every</span>
+                    <input type="number" />
+                    <Dropdown title='period' items={periodOptions} defaultSelectedId={period} onItemSelected={onPeriodOptionSelected} />
+                </div>
+            }
+
+            <div className='trans-form-submit-container'>
+                <Button block inactive={loadState === loadStates.LOADING} handleClick={handleSubmitTransfer}> SUBMIT </Button>
+                <ProgressSpinner canShow={loadState === loadStates.LOADING} />
+                <p className='form-message'>{formMessage}</p>
+            </div>
+
+
+
+        </form>
     )
 
     const outFlowForm = (
-        <div>Hello World</div>
+        <form className='trans-form'>
+
+            <div className='form-input-box'>
+                <label className='form-input-label'>Choose the Pot you are taking money from </label>
+                <Dropdown block title='fromPot' items={potOptions} defaultSelectedId={fromPotId} onItemSelected={onFromPotOptionSelected} />
+            </div>
+
+            <FormInput
+                type="number"
+                name="amount"
+                label="Amount"
+                value={amount}
+                handleChange={handleChange}
+                placeholder="How much are you transfering?"
+                required />
+
+            <FormInput
+                type="text"
+                name="title"
+                label="Remarks"
+                value={title}
+                handleChange={handleChange}
+                placeholder="...short description..."
+                required
+            />
+            <FormInput
+                type="date"
+                name="date"
+                label="When should the transaction start?"
+                value={startDate}
+                handleChange={handleChange}
+            />
+            <div className='trans-form-input-box'>
+                <label>Will this be a recurring transaction?</label>
+                <input type="checkbox" className="slider" name="recurring" onChange={() => setRecurring(!recurring)} />
+            </div>
+
+            {recurring &&
+                <div className="period-container">
+                    <span>It should repeat every</span>
+                    <input type="number" />
+                    <Dropdown title='period' items={periodOptions} defaultSelectedId={period} onItemSelected={onPeriodOptionSelected} />
+                </div>
+            }
+            <div className='trans-form-submit-container'>
+                <Button block inactive={loadState === loadStates.LOADING} handleClick={handleSubmitTransfer}> SUBMIT </Button>
+                <ProgressSpinner canShow={loadState === loadStates.LOADING} />
+                <p className='form-message'>{formMessage}</p>
+            </div>
+
+        </form>
     )
 
     return (

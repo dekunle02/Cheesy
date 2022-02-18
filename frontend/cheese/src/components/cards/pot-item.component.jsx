@@ -13,7 +13,7 @@ function PotItem({ pot, active, handleClick, handleEdit }) {
 
     const potAmount = `${pot.currency.symbol} ${formatMoneyNumber(pot.amount)}`
 
-    const potOptions = [{id:1, text:"Edit"}, {id:2, text:"Make a transaction"}]
+    const potOptions = [{id:1, text:"Edit"}, {id:2, text:"Make a transaction"}, {id:3, text:"Delete"}]
     const onPotOtionSelected = (optionId) => {
         if (optionId === 1) {
             handleEdit()

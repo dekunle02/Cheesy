@@ -45,7 +45,6 @@ class ApiClient {
         })
     }
 
-
     async getNetworthRange(startDate, granularity) {
         this.sleep(0)
 
@@ -169,7 +168,7 @@ class ApiClient {
     async getRecurringTransactionById(transactionId){
         return {
             status: this.SUCCESS,
-            data: { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { name: "GTB Dom", currency: { symbol: "$" } },is_recurring:true, treat_date:'06-01-2022' },
+            data: { id: 1, title: "Royalties", amount: 250, kind: 'inflow', period:"month", period_count:3, pot: { id: 2, name: "GTB Dom", currency: { symbol: "$" } },is_recurring:true, treat_date:'2022-01-06' },
         }
     }
 
@@ -180,6 +179,9 @@ class ApiClient {
     }
 
     async patchRecurringTransaction(transactionId, transactionData) {
+        console.log(transactionData)
+        await this.sleep(2000)
+
         return{
             status: this.SUCCESS
         }

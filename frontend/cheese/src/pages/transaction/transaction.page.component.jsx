@@ -14,6 +14,8 @@ function TransactionsPage() {
     const api = useApi(token)
 
     const [canShowNewTrans, setCanShowNewTrans] = useState(false)
+    const [canShowEditTrans, setCanShowEditTrans] = useState(false)
+    const [selectedTrans, setSelectedTrans] = useState("")
 
     const [transactionsArr, setTransactionsArr] = useState([])
     // const [sortId, setSortId] = useState(1)
@@ -46,12 +48,15 @@ function TransactionsPage() {
     }
 
     const onTransactionItemClick = id => {
-        console.log(id)
+        console.log("selected", id)
+        setSelectedTrans(id)
+        setCanShowEditTrans(true)
     }
 
     return (
         <div className="transactions-page-container">
             {canShowNewTrans && <TransactionDetailForm canShow={canShowNewTrans} setCanShow={setCanShowNewTrans} />}
+            {canShowEditTrans && <TransactionDetailForm transactionId={selectedTrans} canShow={canShowEditTrans} setCanShow={setCanShowEditTrans} />}
             <div className="transactions-page-heading">
                 <h1>Transactions 💸</h1>
                 <span>See all your transaction records here</span>
