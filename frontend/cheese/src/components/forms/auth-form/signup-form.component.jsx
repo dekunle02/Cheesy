@@ -52,15 +52,16 @@ function SignUpForm({ handleOldUser, ...otherProps }) {
             alert("Confirm that your passwords match")
             return
         }
+
         setLoadState(loadStates.LOADING)
 
         auth.signUp(username, email, password).then(response => {
-            setLoadState(loadState.FINISHED)
+            setLoadState(loadStates.FINISHED)
             if (response.status === auth.SUCCESS) {
                 dispatch(setUserData(response.data))
                 navigate('/app', { replace: true })
             } else {
-                alert(response.data.message)
+                alert(`Unable to create User...Error:${response.data.message}`)
             }
         }
         )

@@ -11,6 +11,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from .serializers import UserSerializer
+from pot.models import Currency
+from transaction.models import Transaction
+
+
+def treat_all_pending_transactions(user: User):
+    all_transactions = list(Transaction.objects.filter(user=user))
+    Transaction.treat_list(all_transactions)
 
 
 class SignUpView(APIView):
@@ -27,11 +34,13 @@ class SignUpView(APIView):
         try:
             user: User = User.objects.create_user(
                 username=username, email=email, password=password)
+            currency = Currency.objects.filter(user=user)[0]
+            user.default_currency = currency
+            user.save()
             refresh: any = RefreshToken.for_user(user)
             serializer: UserSerializer = UserSerializer(user)
 
             response_data: dict = {
-                'message': "User created successfully",
                 'token': {'refresh': str(refresh), 'access': str(refresh.access_token)},
                 'user': serializer.data
             }
@@ -56,10 +65,12 @@ class SignInView(APIView):
             return Response(data={"message": "No user matches email"}, status=status.HTTP_400_BAD_REQUEST)
 
         if user.check_password(password):
+            treat_all_pending_transactions(user)
             refresh = RefreshToken.for_user(user)
             token: dict = {'refresh': str(refresh), 'access': str(
                 refresh.access_token)}
-            return Response(data={"message": "Sign In Successful", "token": token, "user": {'username': user.username, 'email': user.email, 'image_url': user.image_url}}, status=status.HTTP_200_OK)
+            serializer: UserSerializer = UserSerializer(user)
+            return Response(data={"token": token, "user": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response(data={"message": "Incorrect password"}, status=status.HTTP_400_BAD_REQUEST)
 

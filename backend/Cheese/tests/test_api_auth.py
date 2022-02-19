@@ -133,3 +133,4 @@ class AccountTest(APITestCase):
         users = UserModel.objects.all()
 
         self.assertEquals(len(users), 0)
+

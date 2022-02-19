@@ -65,6 +65,7 @@ class PotViewSet(viewsets.ModelViewSet):
             networth_bundle['currency'] = serialized_currency
         return Response(data=networth_list, status=status.HTTP_200_OK)
 
+    
     """
     @desc View Function that returns a list of networths for the user from a given date to the present day.
     @params (from_date) Date - the date to start data fetching from

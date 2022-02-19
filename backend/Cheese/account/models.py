@@ -8,10 +8,10 @@ class User(AbstractUser):
     default_currency = models.ForeignKey("pot.Currency", on_delete=models.CASCADE, null=True, blank=True, related_name='default_currency')
     photo_url = models.URLField(null=True, blank=True)
 
-    @property
+    @property 
     def image_url(self) -> str:
-        if self.image:
-            return self.image.url
+        if self.photo_url:
+            return self.photo.url
         else:
             return ""
             

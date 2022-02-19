@@ -43,7 +43,7 @@ function SignInForm({ handleNewUser, ...otherProps }) {
                 dispatch(setUserData(response.data))
                 navigate('/app', { replace: true })
             } else {
-                alert(response.data.message)
+                alert("Error signing in...")
             }
         }
         )

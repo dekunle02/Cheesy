@@ -144,7 +144,7 @@ class PotTest(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(pot.name, 'Monzo')
-        self.assertEqual(pot.color_code, 3)
+        self.assertEqual(pot.color_code, '3')
         self.assertEqual(pot.currency, Currency.objects.get(id=2))
         self.assertFalse(outflow[1])
     

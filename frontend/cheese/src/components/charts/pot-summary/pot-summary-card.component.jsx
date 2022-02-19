@@ -15,7 +15,7 @@ function PotSummaryDonut() {
     const [currencyArr, setCurrencyArr] = useState([])
     const [currencyId, setCurrencyId] = useState(user.default_currency)
 
-    const api = useApi()
+    const api = useApi(token)
 
     useEffect(() => {
         api.getAllCurrencies().then(response => {

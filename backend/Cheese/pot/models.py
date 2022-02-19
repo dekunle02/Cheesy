@@ -1,13 +1,10 @@
 from decimal import Decimal
-
-from django.db import models
-from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.db import models
+from django.db.models.query import QuerySet
 from core.constants import DEFAULT_POT_COLOR_CODE
 from account.models import User
-# Create your models here.
 
 
 class Currency(models.Model):
@@ -43,8 +40,8 @@ class Pot(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     records = models.ManyToManyField(
-        "transaction.Record", related_name="pot_records")
-    color_code = models.IntegerField(default=DEFAULT_POT_COLOR_CODE)
+        "transaction.Record", related_name="pot_records", blank=True)
+    color_code = models.CharField(max_length=8, default=DEFAULT_POT_COLOR_CODE, unique=False)
 
     def __str__(self):
         return f"user:{self.user.username} pot:{self.name} amount:{self.amount}"

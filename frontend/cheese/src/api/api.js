@@ -1,9 +1,15 @@
+import axios from "axios";
+
 class ApiClient {
-
     constructor(token) {
-        this.token = token
+        this.axiosInstance = axios.create({ 
+            baseURL: 'http://127.0.0.1:8000/api/v1/',
+            headers: {
+                "Content-Type": 'application/json',
+                'Authorization': `Bearer ${token.access}`
+            }
+        }) 
     }
-
     SUCCESS = 'success'
     FAILURE = 'failure'
 
@@ -11,38 +17,24 @@ class ApiClient {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-
     async getTotalBalance() {
-        this.sleep(0)
-        return ({
-            status: this.SUCCESS,
-            data: [
-                {
-                    currency: { id: 1, code: "USD", symbol: "$", rate: 1 },
-                    amount: 5200.48
-                },
-                {
-                    currency: { id: 2, code: "GBP", symbol: "£", rate: 0.7 },
-                    amount: 4850.44
-                },
-                {
-                    currency: { id: 3, code: "EUR", symbol: "€", rate: 1.1 },
-                    amount: 5070.81
-                },
-            ]
-        })
+       return await this.axiosInstance.get('pots/networth/').then(response => ({
+           status: this.SUCCESS,
+           data:response.data
+       })).catch(error => ({
+           status: this.FAILURE,
+           data: error.response.data
+       }))
     }
 
     async getAllCurrencies() {
-        await this.sleep(0)
-        return ({
+        return await this.axiosInstance.get('currencies/').then(response => ({
             status: this.SUCCESS,
-            data: [
-                { id: 1, code: "USD", symbol: "$", rate: 1 },
-                { id: 2, code: "GBP", symbol: "£", rate: 0.7 },
-                { id: 3, code: "EUR", symbol: "€", rate: 1.1 },
-            ]
-        })
+            data: response.data
+        })).catch(error => ({
+            status: this.FAILURE,
+            data:error.response.data
+        }))
     }
 
     async getNetworthRange(startDate, granularity) {

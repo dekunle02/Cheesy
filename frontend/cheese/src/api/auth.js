@@ -1,65 +1,53 @@
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+import axios from 'axios'
+
 
 class AuthClient {
-    // constructor(token) {
-    //     this.token = token
-    // }
-
     SUCCESS = 'success'
     FAILURE = 'failure'
+    axiosInstance = axios.create({ baseURL: 'http://127.0.0.1:8000/api/v1/' })
 
-    randomPicUrl = "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/0/0e/Warrior_Thanos.jpg"
 
-    
-    /**
-     * response expected 
-     * user: {id, email,username, photo_url, default_currency}
-     * token: {access: , refresh: }
-     */
     async signUp(username, email, password) {
-        await sleep(0);
-        return {
-            status: this.SUCCESS,
-            data: {
-                user: {
-                    id: 1,
-                    email: "dekunle.py@gmail.com",
-                    username: "Samad",
-                    photo_url: this.randomPicUrl,
-                    default_currency: 1
-                },
-                token: { refresh: 1, access: 1 }
+        return await this.axiosInstance.post('signup/', {
+            username: username,
+            email: email,
+            password: password
+        }).then(response => (
+            {
+                status: this.SUCCESS,
+                data: response.data
             }
-        }
-
+        )).catch(error => ({
+            status: this.FAILURE,
+            data: error.response.data
+        }))
     }
 
     async signIn(email, password) {
-        await sleep(0);
-        return {
-            status: this.SUCCESS,
-            data: {
-                user: {
-                    id: 1,
-                    email: "dekunle.py@gmail.com",
-                    username: "Samad",
-                    photo_url: this.randomPicUrl,
-                    default_currency: 1
-                },
-                token: { refresh: 1, access: 1 }
+        return await this.axiosInstance.post('signin/', {
+            email: email,
+            password: password
+        }).then(response => (
+            {
+                status: this.SUCCESS,
+                data: response.data
             }
-        }
+        )).catch(error => ({
+            status: this.FAILURE,
+            data: error.response.data
+        }))
+
     }
 
     async validateToken(token) {
-        // token = {access:, refresh: ,}
-        await sleep(0);
-        return {
+        const data = { token: token.access }
+        return await this.axiosInstance.post('token/verify/', data).then(response => ({
             status: this.SUCCESS,
             data: true
-        }
+        })).catch(error => ({
+            status: this.FAILURE,
+            data: false
+        }))
     }
 }
 

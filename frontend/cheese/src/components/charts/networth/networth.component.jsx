@@ -21,6 +21,8 @@ function NetworthCard() {
 
     const [rangeData, setRangeData] = useState([{ currency: {}, ranges: { dates: [], amounts: [] } }])
 
+    
+
     const periodButtonItems = [
         { id: 1, text: "1W" },
         { id: 2, text: "1M" },
@@ -71,11 +73,12 @@ function NetworthCard() {
     }
 
     const displayedBalance = () => {
-        if (totalBalanceArr.length > 0) {
-            const balance = totalBalanceArr.find(balance => balance.currency.id === currencyId)
+        if (totalBalanceArr.length > 0 && currencyId) {
+            const balance = totalBalanceArr.find(balance => (balance.currency.id === currencyId))
             return `${balance.currency.symbol} ${formatMoneyNumber(balance.amount)}`
         }
         else return "0"
+        // return "0"
     }
 
     const xAxis = () => {
@@ -120,12 +123,7 @@ function NetworthCard() {
             xaxis: {
                 type: 'string',
                 categories: xAxis()
-            },
-            // tooltip: {
-            //     x: {
-            //         format: 'dd-MM-yy'
-            //     },
-            // },
+            }
         },
 
     };
