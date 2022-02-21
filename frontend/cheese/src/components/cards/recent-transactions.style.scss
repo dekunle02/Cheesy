@@ -4,12 +4,15 @@
 .recent-trans-container {
   flex-grow: 1;
   margin-left: 1.5rem;
+  height: 35rem;
 
   .recent-trans-content {
     background-color: rgba(#f3e5f5, 0.5);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border-radius: $small-border-radius;
     padding: 1rem;
-    height: 100%;
 
     .recent-title {
       font-size: 2rem;
@@ -18,16 +21,21 @@
     .btn-container {
       display: flex;
       justify-content: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
+    }
+    .recent-trans-rows-container{
+      height: 100%;
+      overflow-y: auto;
     }
   }
 }
 
 .transaction-row {
   display: grid;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: 1fr min-content;
   grid-template-columns: repeat(2, 50%);
   justify-content: start;
+  margin-bottom: 1rem;
 
   .title {
     font-size: 1.8rem;

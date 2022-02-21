@@ -1,13 +1,16 @@
-const formatDate = date => date.toISOString().split('T')[0]
-
-const formatDisplayDate = date => {
-    const options = { weekday: 'short', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString(undefined, options)
-}
+import dayjs from 'dayjs'
 
 const formatMoneyNumber = number => {
     let numberFormatter = new Intl.NumberFormat('en-NG')
     return numberFormatter.format(number)
 }
 
-export { formatDate, formatDisplayDate, formatMoneyNumber }
+function changeStringToDate(str){
+    return dayjs(str)
+}
+
+function changeDateToString(d){
+    return d.format('YYYY-MM-DD')
+}
+
+export {formatMoneyNumber, changeStringToDate, changeDateToString }

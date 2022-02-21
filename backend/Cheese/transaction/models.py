@@ -49,7 +49,7 @@ class Transaction(models.Model):
     def __str__(self) -> str:
         return ("transaction:{self.title} amount:{self.amount} pot:{self.pot.id}")
 
-    def save(self, *args, **kwargs)->None:
+    def save(self, *args, **kwargs) -> None:
         self.kind = self.kind if self.kind else self.base_kind
         super().save(*args, **kwargs)
 
@@ -67,11 +67,15 @@ class Transaction(models.Model):
     """
     @staticmethod
     def get_transaction_summary_net_from_list(transaction_list: list) -> dict:
-        inflow_list: list = [transaction for transaction in transaction_list if transaction.kind == Transaction.Kind.INFLOW]
-        sum_inflow: Decimal = sum([transaction.amount for transaction in inflow_list])
-        outflow_list: list = [transaction for transaction in transaction_list if transaction.kind == Transaction.Kind.OUTFLOW]
-        sum_outflow: Decimal = sum([transaction.amount for transaction in outflow_list])
-        
+        inflow_list: list = [
+            transaction for transaction in transaction_list if transaction.kind == Transaction.Kind.INFLOW]
+        sum_inflow: Decimal = sum(
+            [transaction.amount for transaction in inflow_list])
+        outflow_list: list = [
+            transaction for transaction in transaction_list if transaction.kind == Transaction.Kind.OUTFLOW]
+        sum_outflow: Decimal = sum(
+            [transaction.amount for transaction in outflow_list])
+
         return {'inflow': sum_inflow, 'outflow': sum_outflow, 'net': sum_inflow - sum_outflow}
 
     """
@@ -99,14 +103,14 @@ class Transaction(models.Model):
     """
     @desc Treat function allows for the transaction to be carried out on the Pot
     """
-    def treat(self)-> None:
-        if self.is_deleted: # Only transactions not marked as deleted can be treated
+
+    def treat(self) -> None:
+        if self.is_deleted:  # Only transactions not marked as deleted can be treated
             return
         if self.is_recurring:
             self.treat_recurring()
         else:
             self.treat_one_off()
-
 
     def treat_one_off(self) -> None:
         if self.is_treated:
@@ -174,6 +178,7 @@ class Transaction(models.Model):
     """
     @desc Gets a list of days that a transaction can be treated from it's defactor last process date
     """
+
     def get_recurring_dates(self) -> list:
         dates = []
         today = date.today()
@@ -183,12 +188,13 @@ class Transaction(models.Model):
         while last_treat_date < today:
             last_treat_date += time_increment
             dates.append(last_treat_date)
-        
+
         return list(filter(lambda date: date <= today, dates))
 
     """
     @desc Gets the timedelta of increment using the period information of the transaction
     """
+
     def get_time_increment(self) -> relativedelta:
         if self.period == self.Period.DAY:
             return relativedelta(days=self.period_count)
@@ -236,7 +242,7 @@ class Record(models.Model):
         max_digits=12, decimal_places=2, default=0)
     date = models.DateField(blank=False, null=False)
 
-    def __str__(self)-> str:
+    def __str__(self) -> str:
         return f"user:{self.user.username} pot:{self.pot.id} transaction:{self.transaction.id} old:{self.old_amount} new:{self.new_amount} date:{self.date}"
 
     """
@@ -257,7 +263,7 @@ class Record(models.Model):
             while from_date <= today:
                 records = pot.records.all().filter(date=from_date)
                 records_deck.append(list(records))
-                dates.append(from_date.day)
+                dates.append(from_date)
                 from_date += relativedelta(days=1)
             amounts = Record.get_amount_list_from_records_deck(
                 records_deck, pot.amount)
@@ -265,39 +271,43 @@ class Record(models.Model):
         elif granularity == Transaction.Period.MONTH:
             from_date = date(from_date.year, from_date.month, 1)
             today = date(today.year, today.month, 1)
+            # records = pot.records.all().filter(date__range=(from_date, today))
+            # today = date.today()
             while from_date <= today:
                 records = pot.records.all().filter(
                     date__month=from_date.month, date__year=from_date.year)
-                records_deck.append(list(records))
-                dates.append(from_date.month)
+                records_deck.append(records)
+                dates.append(from_date)
                 from_date += relativedelta(months=1)
             amounts = Record.get_amount_list_from_records_deck(
                 records_deck, pot.amount)
-        
+
         elif granularity == Transaction.Period.YEAR:
             from_date = date(from_date.year, from_date.month, 1)
             today = date(today.year, today.month, 1)
             while from_date <= today:
                 records = pot.records.all().filter(date__year=from_date.year)
                 records_deck.append(list(records))
-                dates.append(from_date.year)
+                dates.append(from_date)
                 from_date += relativedelta(years=1)
             amounts = Record.get_amount_list_from_records_deck(
                 records_deck, pot.amount)
         return {"dates": dates, "amounts": amounts}
-    
+
     """
     @desc Given the latest amount in a decque where each element is itself a list of sequential records, 
                 it gets a list of the pot's amounts at each index of the original list of decques
     """
     @staticmethod
     def get_amount_list_from_records_deck(deck: deque, last_amount: Decimal) -> list:
-        amount_list = [float(last_amount)]
+        amount_list = [Decimal(last_amount)]
         while len(deck) > 1:
-            current_list = deck[-1]
-            last_amount = Record.get_oldest_amount_from_list(
-                current_list, last_amount)
-            amount_list.append(float(last_amount))
+            current_list = list(deck[-1])
+            latest_amount = Record.get_oldest_amount_from_list(current_list, last_amount)
+            last_amount = latest_amount if latest_amount else last_amount #There is a BUG HERE that I have not figured out
+            # print("***current List => ", "\n".join([str(r) for r in current_list]))
+            # print("****last_amount", last_amount) 
+            amount_list.append(Decimal(last_amount))
             deck.pop()
         amount_list.reverse()
         return amount_list
@@ -321,28 +331,33 @@ class Record(models.Model):
     @return {date: , record: in, out, net}
     """
     @staticmethod
-    def fetch_record_total_from(user:User, from_date:date, granularity:str) -> dict: 
+    def fetch_record_total_from(user: User, from_date: date, granularity: str) -> dict:
         records = Record.objects.all().filter(user=user)
         today = date.today()
         dates = []
         summaries = []
-    
+
         if granularity == Transaction.Period.DAY:
             while from_date <= today:
                 date_records = records.filter(date=from_date)
-                date_transactions = [record.transaction for record in date_records]
-                transactions_summary = Transaction.get_transaction_summary_net_from_list(date_transactions)
+                date_transactions = [
+                    record.transaction for record in date_records]
+                transactions_summary = Transaction.get_transaction_summary_net_from_list(
+                    date_transactions)
                 dates.append(from_date)
                 summaries.append(transactions_summary)
                 from_date += relativedelta(days=1)
-                        
+
         elif granularity == Transaction.Period.MONTH:
             from_date = date(from_date.year, from_date.month, 1)
             today = date(today.year, today.month, 1)
             while from_date <= today:
-                date_records = records.filter(date__month=from_date.month,  date__year=from_date.year)
-                date_transactions = [record.transaction for record in date_records]
-                transactions_summary = Transaction.get_transaction_summary_net_from_list(date_transactions)
+                date_records = records.filter(
+                    date__month=from_date.month,  date__year=from_date.year)
+                date_transactions = [
+                    record.transaction for record in date_records]
+                transactions_summary = Transaction.get_transaction_summary_net_from_list(
+                    date_transactions)
                 dates.append(from_date.month)
                 summaries.append(transactions_summary)
                 from_date += relativedelta(months=1)
@@ -351,13 +366,15 @@ class Record(models.Model):
             today = date(today.year, today.month, 1)
             while from_date <= today:
                 date_records = records.filter(date__year=from_date.year)
-                date_transactions = [record.transaction for record in date_records]
-                transactions_summary = Transaction.get_transaction_summary_net_from_list(date_transactions)
+                date_transactions = [
+                    record.transaction for record in date_records]
+                transactions_summary = Transaction.get_transaction_summary_net_from_list(
+                    date_transactions)
                 dates.append(from_date.year)
                 summaries.append(transactions_summary)
                 from_date += relativedelta(years=1)
-        return {"dates": dates, "summaries":summaries}
-        
+        return {"dates": dates, "summaries": summaries}
+
 
 class Transfer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -375,7 +392,8 @@ class Transfer(models.Model):
 
     def save(self, *args, **kwargs):
         """Converts from the currency of the from_pot into the equivalent currency of the to pot and creates Inflow/Ouflow"""
-        amount_for_receiving_pot = Currency.convert(self.amount, self.from_pot.currency, self.to_pot.currency)
+        amount_for_receiving_pot = Currency.convert(
+            self.amount, self.from_pot.currency, self.to_pot.currency)
         Inflow.objects.create(
             user=self.user,
             title=self.title,

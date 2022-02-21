@@ -14,7 +14,7 @@ class Currency(models.Model):
     rate = models.DecimalField(max_digits=12, decimal_places=2)
 
     def __str__(self) -> str:
-        return f"user:{self.user.username} currency:{self.code}"
+        return f"Currency:{self.code} user:{self.user.username} "
 
     """
     @desc This function converts an amount from one currency to another.
@@ -27,7 +27,7 @@ class Currency(models.Model):
         if (from_currency.id == to_currency.id):
             return amount
         amount_in_dollars = Decimal(amount) / Decimal(from_currency.rate)
-        return round(amount_in_dollars * to_currency.rate, 2)
+        return amount_in_dollars * to_currency.rate
 
     @staticmethod
     def convert_list(amount_list, from_currency, to_currency):
@@ -44,7 +44,7 @@ class Pot(models.Model):
     color_code = models.CharField(max_length=8, default=DEFAULT_POT_COLOR_CODE, unique=False)
 
     def __str__(self):
-        return f"user:{self.user.username} pot:{self.name} amount:{self.amount}"
+        return f"Pot:{self.name} amount:{self.amount} user:{self.user.username} "
 
     """
     @param {user} User- The user to process.

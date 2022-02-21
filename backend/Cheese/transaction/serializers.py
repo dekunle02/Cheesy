@@ -8,6 +8,7 @@ class RecordSerializer(ModelSerializer):
         model = Record
         fields = ['id', 'user', 'transaction',
                   'old_amount', 'new_amount', 'date']
+        depth = 3
 
 
 class TransactionSerializer(ModelSerializer):

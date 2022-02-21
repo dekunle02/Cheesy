@@ -21,13 +21,11 @@ function NetworthCard() {
 
     const [rangeData, setRangeData] = useState([{ currency: {}, ranges: { dates: [], amounts: [] } }])
 
-    
-
     const periodButtonItems = [
-        { id: 1, text: "1W" },
-        { id: 2, text: "1M" },
-        { id: 3, text: "1Y" },
-        { id: 4, text: "ALL" },
+        { id: 1, text: "1W", days:7 },
+        { id: 2, text: "1M" , days: 30},
+        { id: 3, text: "1Y" , days: 365},
+        { id: 4, text: "ALL", days: 1800},
     ]
 
     const onPeriodButtonSelected = id => {
@@ -56,7 +54,7 @@ function NetworthCard() {
 
     useEffect(() => {
         const period = periodButtonItems.find(period => (period.id === periodId))
-        api.getNetworthRange(period.text, "granularity").then(response => {
+        api.getNetworthRange(period.days).then(response => {
             if (response.status === api.SUCCESS) {
                 setRangeData(response.data)
             } else {
@@ -78,7 +76,6 @@ function NetworthCard() {
             return `${balance.currency.symbol} ${formatMoneyNumber(balance.amount)}`
         }
         else return "0"
-        // return "0"
     }
 
     const xAxis = () => {
@@ -91,6 +88,15 @@ function NetworthCard() {
             return []
         }
         return range.ranges.amounts
+    }
+
+    function formatChartMoney (value) {
+        if (currencyArr.length > 0 && currencyId) {
+            const money = formatMoneyNumber(value)
+            const selectedCurrency = currencyArr.find(currency => currency.id === currencyId)
+            return `${selectedCurrency.symbol}${money}`
+        }
+        else return value
     }
 
     const chartConfig = {
@@ -121,8 +127,13 @@ function NetworthCard() {
             colors: ['#60ad5e', '#E91E63']
             ,
             xaxis: {
-                type: 'string',
+                type: 'datetime',
                 categories: xAxis()
+            },
+            yaxis: {
+                labels: {
+                    formatter: formatChartMoney
+                }
             }
         },
 

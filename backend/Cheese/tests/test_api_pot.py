@@ -223,7 +223,7 @@ class PotTest(APITestCase):
         expected_list_amounts = [100, 100, 110, 110, 110, 110, 200, 200]
         expected_list_dates = []
         while last_week <= datetime.now():
-            expected_list_dates.append(last_week.day)
+            expected_list_dates.append(last_week.date())
             last_week += timedelta(days=1)
         
         self.assertEquals(expected_list_amounts, response.data['amounts'])
@@ -299,7 +299,7 @@ class PotTest(APITestCase):
         expected_list_dates = []
 
         while last_week <= datetime.now():
-            expected_list_dates.append(last_week.day)
+            expected_list_dates.append(last_week.date())
             last_week += timedelta(days=1)
 
         self.assertEquals(expected_list_amounts, response.data[0]['ranges']['amounts'])

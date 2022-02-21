@@ -12,6 +12,7 @@
     .dashboard-row{
         display: flex;
         flex-direction: row;
+        align-items: stretch;
     
         .dashboard-summary-donut{
             display:inline-block

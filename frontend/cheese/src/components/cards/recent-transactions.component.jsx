@@ -25,20 +25,21 @@ function RecentTransactionsCard({potId}) {
     const token = useSelector(state => state.user.userData.token)
     const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])
-    // const [sortId, setSortId] = useState(1)
+    const [sortId, setSortId] = useState(1)
 
     const transactionButtonItems = [
-        { id: 1, text: "All" },
-        { id: 2, text: "Income" },
-        { id: 3, text: "Expense" },
+        { id: 1, text: "All", kind:""},
+        { id: 2, text: "Income", kind:"inflow"},
+        { id: 3, text: "Expense", kind:"outflow" },
     ]
 
     useEffect(() => {
         let promise = null
+        const sort = transactionButtonItems.find(t => (t.id === sortId))
         if (potId) {
-            promise = api.getRecentTransactionsByPot(potId)
+            promise = api.getRecentTransactionsByPot(potId, sort.kind)
         } else {
-            promise = api.getRecentTransactions()
+            promise = api.getRecentTransactions(sort.kind)
         }
         promise.then(response => {
             if (response.status === api.SUCCESS) {
@@ -47,11 +48,10 @@ function RecentTransactionsCard({potId}) {
                 alert("Error fetching recent transactions")
             }
         })
-    }, [])
+    }, [sortId])
 
     const onTransactionIdSelected = id => {
-        // setSortId(id)
-        console.log(id)
+        setSortId(id)
     }
 
     return (
@@ -62,7 +62,7 @@ function RecentTransactionsCard({potId}) {
                     <div className="btn-container">
                         <ButtonGroup items={transactionButtonItems} defaultSelectedId={1} onItemSelected={onTransactionIdSelected} />
                     </div>
-                    <div>
+                    <div className="recent-trans-rows-container">
                         {transactionArr.map(record => (<TransactionRow key={record.id} record={record} />))}
                     </div>
                 </div>

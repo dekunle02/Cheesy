@@ -52,6 +52,19 @@ class PotViewSet(viewsets.ModelViewSet):
         queryset: QuerySet = Pot.objects.all().filter(user=user)
         return queryset
 
+    def list(self, request, *args, **kwargs):
+        pots = self.get_queryset()        
+        currency_id = request.GET.get("currency")
+        if currency_id:
+            try:
+                currency = Currency.objects.get(id=currency_id)
+                for pot in pots:
+                    pot.amount = Currency.convert(pot.amount, pot.currency, currency)
+            except:
+                pass
+        serializer = self.get_serializer(pots, many=True)
+        return Response(serializer.data)
+
     """
     @desc View Function that returns a list of networths for the user.
     @returns {Response} Returns an array that contains dictionaries of currencies and equivalent amounts.

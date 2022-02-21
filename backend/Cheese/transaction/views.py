@@ -23,6 +23,8 @@ class RecordViewSet(viewsets.ReadOnlyModelViewSet):
         from_date = request.GET.get('from')
         to_date = request.GET.get('to')
         kind = request.GET.get('kind')
+        limit = request.GET.get('limit')
+        pot = request.GET.get('pot')
 
         if from_date and to_date:
             try:
@@ -33,15 +35,25 @@ class RecordViewSet(viewsets.ReadOnlyModelViewSet):
                 return Response(data={"message": "Dates should be in ISO format.(yyyy-mm-dd)"}, status=status.HTTP_400_BAD_REQUEST)
 
         if kind:
+            kind = kind.lower()
+            if kind in (Transaction.Kind.INFLOW, Transaction.Kind.OUTFLOW):
+                records = records.filter(transaction__kind=kind)
+          
+        if limit:
             try:
-                kind = kind.lower()
-                if kind in (Transaction.Kind.INFLOW, Transaction.Kind.OUTFLOW):
-                    records = records.filter(transaction__kind=kind)
-                else:
-                    raise Exception("Wrong Kind of Transaction")
+                limit = int(limit)
+                records = records.order_by('-date')[0:limit]
             except:
-                return Response(data={"message": "There are only 2 kinds of transactions: inflow, outflow"}, status=status.HTTP_400_BAD_REQUEST)
-        
+                return Response(data={"message": "Make sure limit is a number. e.g 5"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if pot:
+            try:
+                pot = Pot.objects.filter(user=self.request.user).get(pot__id=pot)
+                records = records.filter(pot=pot)
+            except:
+                return Response(data={"message":"Pot with id not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
         serialized_records = self.get_serializer(records, many=True)
         return Response(data=serialized_records.data, status=status.HTTP_200_OK)
     
