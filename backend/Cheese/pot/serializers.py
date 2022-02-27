@@ -11,3 +11,4 @@ class PotSerializer(ModelSerializer):
     class Meta:
         model = Pot
         fields = ['id','name', 'currency', 'amount', 'color_code']
+        depth = 1

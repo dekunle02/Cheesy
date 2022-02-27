@@ -16,8 +16,18 @@ class TransactionSerializer(ModelSerializer):
         model = Transaction
         fields = ['id', 'user', 'title', 'amount', 'pot', 'kind', 'is_recurring',
                   'is_transfer', 'start_date', 'treat_date', 'period', 'period_count']
+        depth = 3
+
+
+class TransactionUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['id', 'user', 'title', 'amount', 'pot', 'kind', 'is_recurring',
+                  'is_transfer', 'start_date', 'treat_date', 'period', 'period_count']
+
 
 class TransferSerializer(ModelSerializer):
     class Meta:
         model = Transfer
-        fields= ['id', 'title', 'from_pot', 'to_pot', 'amount', 'is_recurring', 'start_date']
+        fields = ['id', 'title', 'from_pot', 'to_pot',
+                  'amount', 'is_recurring', 'start_date']

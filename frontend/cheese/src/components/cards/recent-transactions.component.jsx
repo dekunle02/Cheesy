@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { FlatCard } from '../../subcomponents/card/card.component'
 import { ButtonGroup } from '../../subcomponents/button/button.component'
 import { formatMoneyNumber } from '../../api/utils'
-import useApi from '../../api/api'
+import getApi from '../../api/api'
 
 function TransactionRow({ record }) {
     const {date, transaction} = record
@@ -23,18 +23,18 @@ function TransactionRow({ record }) {
 
 function RecentTransactionsCard({potId}) {
     const token = useSelector(state => state.user.userData.token)
-    const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])
     const [sortId, setSortId] = useState(1)
 
     const transactionButtonItems = [
-        { id: 1, text: "All", kind:""},
+        { id: 1, text: "All", kind:"all"},
         { id: 2, text: "Income", kind:"inflow"},
         { id: 3, text: "Expense", kind:"outflow" },
     ]
 
     useEffect(() => {
         let promise = null
+        const api = getApi(token)
         const sort = transactionButtonItems.find(t => (t.id === sortId))
         if (potId) {
             promise = api.getRecentTransactionsByPot(potId, sort.kind)
@@ -45,10 +45,10 @@ function RecentTransactionsCard({potId}) {
             if (response.status === api.SUCCESS) {
                 setTransactionArr(response.data)
             } else {
-                alert("Error fetching recent transactions")
+                // alert("Error fetching recent transactions")
             }
         })
-    }, [sortId])
+    }, [token, potId, sortId])
 
     const onTransactionIdSelected = id => {
         setSortId(id)

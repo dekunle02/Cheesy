@@ -1,7 +1,7 @@
 import './pots-page.style.scss'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import useApi from '../../api/api'
+import getApi from '../../api/api'
 import { Button } from '../../subcomponents/button/button.component'
 import PotItem from '../../components/cards/pot-item.component'
 import PotBalanceChart from '../../components/charts/pot-balance/pot-balance.component'
@@ -14,7 +14,6 @@ import DeletePotCard from '../../components/dialogs/delete/delete-pot.component'
 
 function PotsPage() {
     const token = useSelector(state => state.user.userData.token)
-    const api = useApi(token)
 
     const [canShowPotDetailForm, setShowPotDetailForm] = useState(false)
     const [canShowNewPotForm, setShowNewPotForm] = useState(false)
@@ -28,6 +27,7 @@ function PotsPage() {
     const [potId, setPotId] = useState(null)
 
     useEffect(() => {
+        const api = getApi(token)
         api.getAllPots().then(response => {
             if (response.status === api.SUCCESS) {
                 setPotArr(response.data)
@@ -38,7 +38,7 @@ function PotsPage() {
                 alert("Error fetching pots...")
             }
         })
-    }, [])
+    }, [token])
 
     const handleNewPotClick = () => {
         setShowNewPotForm(true)
@@ -90,10 +90,10 @@ function PotsPage() {
                 }
             </div>
             <div className="pots-page-row">
-                <PotBalanceChart potId={potId} />
-                <RecentTransactionsCard potId={potId} />
+                {potId && <PotBalanceChart potId={potId} />}
+                {potId && <RecentTransactionsCard potId={potId} />}
             </div>
-            <RecurringTransactionsCard potId={potId} handleNewTransactionClick={() => setCanShowNewTrans(true)} handleItemClick={onTransactionItemClick} />
+           {potId && <RecurringTransactionsCard potId={potId} handleNewTransactionClick={() => setCanShowNewTrans(true)} handleItemClick={onTransactionItemClick} />}
         </div>
     )
 }

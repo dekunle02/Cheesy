@@ -6,12 +6,11 @@ import { FlatCard } from '../../../subcomponents/card/card.component'
 import { ButtonGroup } from '../../../subcomponents/button/button.component'
 import { formatMoneyNumber } from "../../../api/utils"
 import Dropdown from '../../../subcomponents/dropdown/dropdown.component'
-import useApi from '../../../api/api'
+import getApi from '../../../api/api'
 
 function NetworthCard() {
     const token = useSelector(state => state.user.userData.token)
     const user = useSelector(state => state.user.userData.user)
-    const api = useApi(token)
 
     const [currencyArr, setCurrencyArr] = useState([])
     const [totalBalanceArr, setTotalBalanceArr] = useState([])
@@ -33,6 +32,7 @@ function NetworthCard() {
     }
 
     useEffect(() => {
+        const api = getApi(token)
         api.getAllCurrencies().then(response => {
             if (response.status === api.SUCCESS) {
                 setCurrencyArr(response.data)
@@ -43,6 +43,7 @@ function NetworthCard() {
     }, [token])
 
     useEffect(() => {
+        const api = getApi(token)
         api.getTotalBalance().then(response => {
             if (response.status === api.SUCCESS) {
                 setTotalBalanceArr(response.data)
@@ -53,6 +54,7 @@ function NetworthCard() {
     }, [token])
 
     useEffect(() => {
+        const api = getApi(token)
         const period = periodButtonItems.find(period => (period.id === periodId))
         api.getNetworthRange(period.days).then(response => {
             if (response.status === api.SUCCESS) {
@@ -61,7 +63,7 @@ function NetworthCard() {
                 alert("Error fetching range...")
             }
         })
-    }, [periodId])
+    }, [token,periodId])
 
 
 

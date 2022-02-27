@@ -1,18 +1,17 @@
 import './transaction.page.style.scss'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import useApi from '../../api/api'
+import getApi from '../../api/api'
 import { Button } from '../../subcomponents/button/button.component'
 import { ButtonGroup } from '../../subcomponents/button/button.component'
 import { IconInput } from '../../subcomponents/form-input/form-input.component'
-import { TransactionRow } from '../../components/cards/recurring-transactions.component'
+import { RecordRow } from '../../components/cards/recurring-transactions.component'
 
 import TransactionDetailForm from '../../components/forms/transaction-detail/transaction-detail.component'
 import DeleteTransactionCard from '../../components/dialogs/delete/delete-transaction.component'
 
 function TransactionsPage() {
     const token = useSelector(state => state.user.userData.token)
-    const api = useApi(token)
 
     const [canShowNewTrans, setCanShowNewTrans] = useState(false)
     const [canShowEditTrans, setCanShowEditTrans] = useState(false)
@@ -21,27 +20,29 @@ function TransactionsPage() {
     const [selectedTrans, setSelectedTrans] = useState("")
 
     const [transactionsArr, setTransactionsArr] = useState([])
-    // const [sortId, setSortId] = useState(1)
+    const [sortId, setSortId] = useState(1)
   
+    const sortButtonItems = [
+        { id: 1, text: "All", kind: "all" },
+        { id: 2, text: "Income", kind: "inflow" },
+        { id: 3, text: "Expense", kind: "outflow" },
+    ]
+
+    const onSortIdSelected = id => {
+        setSortId(id)
+    }
+
     useEffect(() => {
-        api.getAllTransactionRecords("starDate", "kind", "query").then(response => {
+        const api = getApi(token)
+        const sort = sortButtonItems.find(s => s.id ===sortId)
+        api.getAllTransactionRecords(sort.kind, "query").then(response => {
             if (response.status === api.SUCCESS) {
                 setTransactionsArr(response.data)
             } else {
                 alert("Error fetching transactions...")
             }
         })
-    }, [])
-
-    const sortButtonItems = [
-        { id: 1, text: "All" },
-        { id: 2, text: "Income" },
-        { id: 3, text: "Expense" },
-    ]
-    const onSortIdSelected = id => {
-        // setSortId(id)
-        console.log(id)
-    }
+    }, [token, sortId])
 
     const onSearchFieldChange = text => {
         console.log(text)
@@ -92,7 +93,7 @@ function TransactionsPage() {
                 </div>
 
                 <div className="transactions-container">
-                    { transactionsArr.map(t => <TransactionRow key={t.id} transaction={t} handleClick={onTransactionItemClick} handleDelete={() => setCanShowDeleteTrans(true)}/>)}
+                    { transactionsArr.map(t => <RecordRow key={t.id} record={t} handleClick={onTransactionItemClick} handleDelete={() => setCanShowDeleteTrans(true)}/>)}
                 </div>
 
             </div>

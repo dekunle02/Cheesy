@@ -5,9 +5,9 @@ from rest_framework.response import Response
 
 
 from core.helpers import string_to_date
-from pot.models import Pot
+from pot.models import Pot, Currency
 from .models import Record, Transaction, Transfer
-from .serializers import RecordSerializer, TransactionSerializer, TransferSerializer
+from .serializers import RecordSerializer, TransactionSerializer, TransferSerializer, TransactionUpdateSerializer
 
 
 class RecordViewSet(viewsets.ReadOnlyModelViewSet):
@@ -24,7 +24,7 @@ class RecordViewSet(viewsets.ReadOnlyModelViewSet):
         to_date = request.GET.get('to')
         kind = request.GET.get('kind')
         limit = request.GET.get('limit')
-        pot = request.GET.get('pot')
+        pot_id = request.GET.get('pot')
 
         if from_date and to_date:
             try:
@@ -38,7 +38,13 @@ class RecordViewSet(viewsets.ReadOnlyModelViewSet):
             kind = kind.lower()
             if kind in (Transaction.Kind.INFLOW, Transaction.Kind.OUTFLOW):
                 records = records.filter(transaction__kind=kind)
-          
+
+        if pot_id:
+            try:
+                records = records.filter(pot__id=pot_id)
+            except Exception as e:
+                return Response(data={"message": "Pot with id not found"}, status=status.HTTP_400_BAD_REQUEST)
+
         if limit:
             try:
                 limit = int(limit)
@@ -46,21 +52,14 @@ class RecordViewSet(viewsets.ReadOnlyModelViewSet):
             except:
                 return Response(data={"message": "Make sure limit is a number. e.g 5"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if pot:
-            try:
-                pot = Pot.objects.filter(user=self.request.user).get(pot__id=pot)
-                records = records.filter(pot=pot)
-            except:
-                return Response(data={"message":"Pot with id not found"}, status=status.HTTP_400_BAD_REQUEST)
-
-
         serialized_records = self.get_serializer(records, many=True)
         return Response(data=serialized_records.data, status=status.HTTP_200_OK)
-    
+
     @action(detail=False, methods=['get'], url_path="range")
-    def transaction_range(self, request, pk=None, *args, **kwargs):
+    def transaction_range(self, request, *args, **kwargs):
         from_date = request.GET.get('from')
         granularity = request.GET.get('granularity')
+        currency_id = request.GET.get('currency')
         try:
             from_date = string_to_date(from_date)
         except:
@@ -69,11 +68,22 @@ class RecordViewSet(viewsets.ReadOnlyModelViewSet):
             if granularity not in (Transaction.Period.DAY, Transaction.Period.MONTH, Transaction.Period.YEAR):
                 raise Exception("Wrong Granularity")
         except:
-           return Response(data={"message": "Granularity should be day, month, or year"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        data = Record.fetch_record_total_from(request.user, from_date, granularity)
-        return Response(data = data, status=status.HTTP_200_OK)
-         
+            return Response(data={"message": "Granularity should be day, month, or year"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if currency_id:
+            try:
+                currency = Currency.objects.get(id=currency_id)
+                data = Record.fetch_record_total_from(
+                    request.user, from_date, granularity, currency)
+            except:
+                data = Record.fetch_record_total_from(
+                    request.user, from_date, granularity)
+        else:
+            data = Record.fetch_record_total_from(
+                request.user, from_date, granularity)
+
+        return Response(data=data, status=status.HTTP_200_OK)
+
 
 class TransactionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -84,62 +94,61 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return Transaction.objects.all().filter(user=user, is_deleted=False)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, partial=True)
+
+        serializer = TransactionUpdateSerializer(data=request.data, partial=True)
+        
         try:
-            serializer.is_valid(raise_exception=True)  
-            transaction = Transaction.objects.create(user=self.request.user, **serializer.validated_data)          
-            serializer = self.get_serializer(transaction, many=False)
+            serializer.is_valid(raise_exception=True)
+            transaction = Transaction.objects.create(
+                user=self.request.user, **serializer.validated_data)
+            serializer = TransactionUpdateSerializer(transaction, many=False)
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response(data={"message": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)  
+            print("**error", e)
+            return Response(data={"message": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None, *args, **kwargs):
         transaction = Transaction.objects.get(id=pk)
-        serializer = self.get_serializer(
+        serializer = TransactionUpdateSerializer(
             transaction, data=request.data, partial=True)
-        try: 
+        try:
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
             return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
         except:
-          return Response(data={"message": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST) 
+            return Response(data={"message": "Invalid parameters"}, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
         transactions = self.get_queryset()
-        kind = request.GET.get('from')
+        kind = request.GET.get('kind')
         pot = request.GET.get('pot')
         is_transfer = request.GET.get('is_transfer')
+        is_recurring = request.GET.get('is_recurring')
 
-        if (is_transfer == 'true'):
-            transactions.filter(is_transfer=True)
-
+        if (is_transfer == "true"):
+            transactions = transactions.filter(is_transfer=True)
+        if (is_recurring == "true"):
+            transactions = transactions.filter(is_recurring=True)
 
         if kind:
-            try:
-                kind = kind.lower()
-                if kind in (Transaction.Kind.INFLOW, Transaction.Kind.OUTFLOW):
-                    transactions = transactions.filter(kind=kind)
-                else:
-                    raise Exception("Wrong Kind of Transaction")
-            except:
-                return Response(data={"message": "There are only 2 kinds of transactions: inflow, outflow"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            kind = kind.lower()
+            if kind in (Transaction.Kind.INFLOW, Transaction.Kind.OUTFLOW):
+                transactions = transactions.filter(kind=kind)
         if pot:
             try:
-                transactions.filter(pot=Pot.objects.get(id=pot))
+                transactions = transactions.filter(pot=Pot.objects.get(id=pot))
             except:
                 return Response(data={"message": "Enter Valid pot_id"}, status=status.HTTP_400_BAD_REQUEST)
 
         serialized_transactions = self.get_serializer(transactions, many=True)
-        return Response(data=serialized_transactions.data, status=status.HTTP_200_OK) 
+        
+        return Response(data=serialized_transactions.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None, *args, **kwargs):
         transaction = Transaction.objects.get(id=pk)
         transaction.is_deleted = True
         transaction.save()
         return Response(data={"message": "User Account Deleted"}, status=status.HTTP_200_OK)
-
-        
 
     @action(detail=True, methods=['get'], url_path="records")
     def completed_records(self, request, pk=None, *args, **kwargs):
@@ -156,10 +165,10 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
         completed_records = transaction.get_treatment_records_from(from_date)
         serialized_records = RecordSerializer(completed_records, many=True)
-        return Response(data=serialized_records.data, status=status.HTTP_200_OK) 
+        return Response(data=serialized_records.data, status=status.HTTP_200_OK)
 
 
-class TransferViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,viewsets.GenericViewSet):
+class TransferViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = TransferSerializer
 
@@ -170,8 +179,9 @@ class TransferViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,viewsets.Gen
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, partial=True)
         try:
-            serializer.is_valid(raise_exception=True)  
-            transfer = Transfer.objects.create(user=self.request.user, **serializer.validated_data)          
+            serializer.is_valid(raise_exception=True)
+            transfer = Transfer.objects.create(
+                user=self.request.user, **serializer.validated_data)
             serializer = self.get_serializer(transfer, many=False)
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         except:

@@ -44,7 +44,7 @@ class Pot(models.Model):
     color_code = models.CharField(max_length=8, default=DEFAULT_POT_COLOR_CODE, unique=False)
 
     def __str__(self):
-        return f"Pot:{self.name} amount:{self.amount} user:{self.user.username} "
+        return f"Pot:{self.name} amount:{self.amount} user:{self.user.username} id: {self.id}"
 
     """
     @param {user} User- The user to process.

@@ -334,6 +334,7 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
         </form>
     )
 
+    
     return (
         <Dialog {...otherProps}>
             <FlatCard>
@@ -343,11 +344,9 @@ function TransactionDetailForm({ transactionId, ...otherProps }) {
                     <div className="trans-btn-grp-container">
                         <ButtonGroup tab items={FormStates} defaultSelectedId={formState} onItemSelected={onFormItemSelected} />
                     </div>
-
                     {formState === 1 && inflowForm}
                     {formState === 2 && outFlowForm}
                     {formState === 3 && transferForm}
-
                 </div>
             </FlatCard>
 

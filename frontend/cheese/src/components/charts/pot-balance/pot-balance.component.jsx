@@ -5,38 +5,41 @@ import Chart from "react-apexcharts";
 import { FlatCard } from '../../../subcomponents/card/card.component'
 import { ButtonGroup } from '../../../subcomponents/button/button.component'
 import { formatMoneyNumber } from "../../../api/utils"
-import useApi from '../../../api/api'
+import getApi from '../../../api/api'
 
 function PotBalanceChart({ potId }) {
     const token = useSelector(state => state.user.userData.token)
-    const api = useApi(token)
+   
     const [pot, setPot] = useState(null)
     const [periodId, setPeriodId] = useState(1)
     const [rangeData, setRangeData] = useState([{ dates: [], amounts: [] }])
 
 
     const periodButtonItems = [
-        { id: 1, text: "1W" },
-        { id: 2, text: "1M" },
-        { id: 3, text: "1Y" },
-        { id: 4, text: "ALL" },
+        { id: 1, text: "1W", days: 7 },
+        { id: 2, text: "1M", days: 30 },
+        { id: 3, text: "1Y", days: 365 },
+        { id: 4, text: "ALL", days: 1800 },
     ]
+
     const onPeriodButtonSelected = id => {
         setPeriodId(id)
     }
 
     useEffect(() => {
+        const api = getApi(token)
         const period = periodButtonItems.find(period => (period.id === periodId))
-        api.getPotRange(potId, period.text, "granularity").then(response => {
+        api.getPotRange(potId,period.days).then(response => {
             if (response.status === api.SUCCESS) {
                 setRangeData(response.data)
             } else {
                 alert("Error fetching range...")
             }
         })
-    }, [periodId, potId])
+    }, [token, periodId, potId])
 
     useEffect(() => {
+        const api = getApi(token)
         api.getPot(potId).then((response) => {
             if (response.status === api.SUCCESS) {
                 setPot(response.data)
@@ -44,7 +47,7 @@ function PotBalanceChart({ potId }) {
                 alert("Error fetching range...")
             }
         })
-    }, [potId])
+    }, [potId, token])
 
     const colors = ["#fcca46", "#2e702f", "#76c893", "#fcca46", "#A300D6", "#2B908F", "#13D8AA"]
     let potColor = ""
@@ -94,7 +97,7 @@ function PotBalanceChart({ potId }) {
             colors: [potColor, '#E91E63']
             ,
             xaxis: {
-                type: 'string',
+                type: 'datetime',
                 categories: rangeData.dates
             },
             yaxis: {

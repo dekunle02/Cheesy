@@ -8,13 +8,13 @@ import { FlatCard } from '../../../subcomponents/card/card.component'
 import { FormInput } from '../../../subcomponents/form-input/form-input.component'
 import { Button } from '../../../subcomponents/button/button.component'
 import ProgressSpinner from "../../../subcomponents/progress/progress.component"
-import useApi from '../../../api/api'
+import getApi from '../../../api/api'
 import Dropdown from '../../../subcomponents/dropdown/dropdown.component';
 
 
 function PotDetailForm({potId, ...otherProps }) {
     const token = useSelector(state => state.user.userData.token)
-    const api = useApi(token)
+    const api = getApi(token)
 
     const [name, setName] = useState("")
     const [currencyArr, setCurrencyArr] = useState([])
@@ -26,6 +26,7 @@ function PotDetailForm({potId, ...otherProps }) {
 
 
     useEffect(() => {
+        const api = getApi(token)
         api.getAllCurrencies().then(response => {
             if (response.status === api.SUCCESS) {
                 setCurrencyArr(response.data)
@@ -36,12 +37,13 @@ function PotDetailForm({potId, ...otherProps }) {
                 alert("Error fetching currencies...")
             }
         })
-    }, [token])
+    }, [token, potId])
 
     useEffect(() => {
         if (!potId) {
             return
         }
+        const api = getApi(token)
         api.getPot(potId).then(response => {
             if (response.status === api.SUCCESS) {
                 const { name, currency, amount, color_code } = response.data
@@ -56,7 +58,7 @@ function PotDetailForm({potId, ...otherProps }) {
             }
         })
 
-    }, [potId])
+    }, [potId, token])
 
     
     const currencyDropDownItems = currencyArr.map(currency => ({ id: currency.id, text: currency.code }))
@@ -66,7 +68,6 @@ function PotDetailForm({potId, ...otherProps }) {
 
     const handleChange = event => {
         const { value, name } = event.target
-
         switch (name) {
             case "name":
                 setName(value)

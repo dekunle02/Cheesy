@@ -14,13 +14,14 @@ from transaction.models import Transaction, Outflow, Inflow
 class CurrenciesTest(APITestCase):
     def setUp(self) -> None:
         UserModel = get_user_model()
-        user = UserModel.objects.create_user(username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
+        user = UserModel.objects.create_user(
+            username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
         url = reverse('account:signin')
-        data = {'email':'admin@admin.com', 'password':'2@tW&AYhLXW7'}
+        data = {'email': 'admin@admin.com', 'password': '2@tW&AYhLXW7'}
         response = self.client.post(url, data)
         access_token = response.data['token']['access']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
-        
+
         currency1 = Currency.objects.get(user=user, code="USD")
         Pot.objects.create(
             user=user,
@@ -52,7 +53,7 @@ class CurrenciesTest(APITestCase):
         """Currencies can be fetched appropriately"""
         url = reverse('pot:currency-list')
         response = self.client.get(url)
-        
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 3)
 
@@ -63,36 +64,37 @@ class CurrenciesTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['code'], 'USD')
-        
+
     def test_update_currency_object(self):
         """Currency can be updated by the user"""
         url = reverse('pot:currency-detail', kwargs={'pk': 1})
         response = self.client.patch(url, {'code': 'NGN'})
         currency = Currency.objects.get(id=1, symbol="$")
-        
+
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(currency.code, 'NGN')
 
     def test_delete_currency_object(self):
         """Currency can be deleted by user"""
-        url = reverse('pot:currency-detail', kwargs={'pk':1})
+        url = reverse('pot:currency-detail', kwargs={'pk': 1})
         response = self.client.delete(url)
         currencies = Currency.objects.all()
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(currencies), 2)
 
-  
+
 class PotTest(APITestCase):
     def setUp(self) -> None:
         UserModel = get_user_model()
-        user = UserModel.objects.create_user(username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
+        user = UserModel.objects.create_user(
+            username='admin', email='admin@admin.com', password='2@tW&AYhLXW7')
         url = reverse('account:signin')
-        data = {'email':'admin@admin.com', 'password':'2@tW&AYhLXW7'}
+        data = {'email': 'admin@admin.com', 'password': '2@tW&AYhLXW7'}
         response = self.client.post(url, data)
         access_token = response.data['token']['access']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
-        
+
         currency1 = Currency.objects.get(user=user, code="USD")
         Pot.objects.create(
             user=user,
@@ -122,10 +124,10 @@ class PotTest(APITestCase):
 
     def test_list_pots(self):
         """Pots are listed"""
-        url = reverse('pot:pot-list') 
+        url = reverse('pot:pot-list')
         response = self.client.get(url)
         self.assertEqual(len(response.data), len(Pot.objects.all()))
-    
+
     def test_get_pot_object(self):
         """Fetches a single pot by its id"""
         url = reverse('pot:pot-detail', kwargs={'pk': 1})
@@ -134,26 +136,27 @@ class PotTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(pot.name, 'Pot1')
-    
+
     def test_update_pot_object(self):
         """Pot object can be updated, amount updates creates relevant transaction objects"""
         url = reverse('pot:pot-detail', kwargs={'pk': 1})
-        response = self.client.patch(url, {'name': 'Monzo', 'amount': 20, 'color_code': 3, 'currency':2})
+        response = self.client.patch(
+            url, {'name': 'Monzo', 'amount': 20, 'color_code': 3, 'currency': 2})
         pot = Pot.objects.get(id=1)
         outflow = Outflow.objects.get_or_create(pot=pot, amount=80)
-        
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(pot.name, 'Monzo')
         self.assertEqual(pot.color_code, '3')
         self.assertEqual(pot.currency, Currency.objects.get(id=2))
         self.assertFalse(outflow[1])
-    
+
     def test_delete_pot_object(self):
         """Pot objects can be deleted"""
-        url = reverse('pot:pot-detail', kwargs={'pk':1})
+        url = reverse('pot:pot-detail', kwargs={'pk': 1})
         self.client.delete(url)
         self.assertEqual(len(Pot.objects.all()), 1)
-    
+
     def test_pot_networth(self):
         """Networth is properly calulated and returned"""
         url = reverse('pot:pot-networth')
@@ -161,8 +164,9 @@ class PotTest(APITestCase):
 
         pot1 = Pot.objects.get(name="Pot1")
         pot2 = Pot.objects.get(name="Pot2")
- 
+
         expected_usd_total = pot1.amount + Currency.convert(pot2.amount, pot2.currency, pot1.currency )
+        Currency.convert(pot2.amount, pot2.currency, pot1.currency)
         self.assertEqual(response.data[0]['amount'], expected_usd_total)
 
     def test_pot_balance_range(self):
@@ -209,9 +213,9 @@ class PotTest(APITestCase):
             is_treated=False,
             start_date=yesterday
         )
-        
 
-        Transaction.treat_list([transaction1, transaction0, transaction3, transaction2])
+        Transaction.treat_list(
+            [transaction1, transaction0, transaction3, transaction2])
 
         url = reverse('pot:pot-record-range', kwargs={'pk': 1})
         range_data = {
@@ -225,10 +229,10 @@ class PotTest(APITestCase):
         while last_week <= datetime.now():
             expected_list_dates.append(last_week.date())
             last_week += timedelta(days=1)
-        
+
         self.assertEquals(expected_list_amounts, response.data['amounts'])
         self.assertEquals(expected_list_dates, response.data['dates'])
-         
+
     def test_networth_range(self):
         """Networth range can be gotten as pot balance range is also retreived"""
         UserModel = get_user_model()
@@ -274,7 +278,7 @@ class PotTest(APITestCase):
             is_treated=False,
             start_date=yesterday
         )
-        
+
         transaction4 = Inflow.objects.create(
             user=user,
             title="Test4",
@@ -284,7 +288,8 @@ class PotTest(APITestCase):
             start_date=yesterday
         )
 
-        Transaction.treat_list([transaction1, transaction0, transaction3, transaction2, transaction4])
+        Transaction.treat_list(
+            [transaction1, transaction0, transaction3, transaction2, transaction4])
 
         url = reverse('pot:pot-networth-range')
         range_data = {
@@ -293,16 +298,19 @@ class PotTest(APITestCase):
         }
         response = self.client.get(url, data=range_data)
 
-        expected_list_amounts_for_pot1 = [100, 100, 110, 110, 110, 110, 200, 200]
-        expected_list_amounts_for_pot2 = Currency.convert_list([200, 200, 200, 200, 200, 200, 240, 240], pot2.currency, pot.currency)
-        expected_list_amounts = [sum(tup) for tup in zip(expected_list_amounts_for_pot1, expected_list_amounts_for_pot2)]
+        expected_list_amounts_for_pot1 = [
+            100, 100, 110, 110, 110, 110, 200, 200]
+        expected_list_amounts_for_pot2 = Currency.convert_list(
+            [200, 200, 200, 200, 200, 200, 240, 240], pot2.currency, pot.currency)
+        expected_list_amounts = [sum(tup) for tup in zip(
+            expected_list_amounts_for_pot1, expected_list_amounts_for_pot2)]
         expected_list_dates = []
 
         while last_week <= datetime.now():
             expected_list_dates.append(last_week.date())
             last_week += timedelta(days=1)
 
-        self.assertEquals(expected_list_amounts, response.data[0]['ranges']['amounts'])
-        self.assertEquals(expected_list_dates, response.data[0]['ranges']['dates'])
-
-         
+        self.assertEquals(expected_list_amounts,
+                          response.data[0]['ranges']['amounts'])
+        self.assertEquals(expected_list_dates,
+                          response.data[0]['ranges']['dates'])

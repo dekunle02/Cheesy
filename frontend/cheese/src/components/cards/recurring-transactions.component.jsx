@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux'
 import { FlatCard } from '../../subcomponents/card/card.component'
 import { ButtonGroup } from '../../subcomponents/button/button.component'
 import { formatMoneyNumber } from '../../api/utils'
-import useApi from '../../api/api'
+import getApi from '../../api/api'
 
 function TransactionRow({ transaction, handleClick, handleDelete }) {
+    // const {id, transaction} = record 
+
     const { id, title, amount, kind, pot, is_recurring, treat_date, period, period_count } = transaction
     const sign = kind === 'inflow' ? "+" : "-"
 
@@ -38,7 +40,58 @@ function TransactionRow({ transaction, handleClick, handleDelete }) {
         }
     }
 
+    return (
+        <div className="rec-transaction-row" onClick={() => handleClick(id)}>
+            {kindLogo()}
+            <h5 className="rec-title">{title}</h5>
+            <span className="description">{descString}</span>
+            {recurringLogo()}
+            <h5 className={`amount ${kind}`}>{`${sign}${pot.currency.symbol}${formatMoneyNumber(amount)}`}</h5>
+            <span className="treat-date">{treat_date}</span>
+            <span className="material-icons delete" onClick={event => {
+                event.stopPropagation()
+                handleDelete(id)}}>
+                {`${is_recurring ? 'backspace': ""}`}
+            </span>
 
+        </div>
+    )
+}
+
+
+function RecordRow({ record, handleClick, handleDelete }) {
+    const {id, transaction} = record 
+
+    const { title, amount, kind, pot, is_recurring, treat_date, period, period_count } = transaction
+    const sign = kind === 'inflow' ? "+" : "-"
+
+    const periodString = is_recurring ? `Every ${period_count} ${period}` : 'Once'
+    const connectString = kind === 'inflow' ? 'into' : 'from'
+
+    const descString = periodString + " " + connectString + " " + pot.name
+
+    const kindLogo = () => {
+        if (kind === 'inflow') {
+            return (<span className="material-icons kind in ">
+                north_east
+            </span>)
+        }
+        else {
+            return (<span className="material-icons kind out">
+                south_west
+            </span>)
+        }
+    }
+
+    const recurringLogo = () => {
+        if (is_recurring) {
+            return (<span className="material-icons recurring">
+                restart_alt
+            </span>)
+        } else {
+            return ""
+        }
+    }
 
     return (
         <div className="rec-transaction-row" onClick={() => handleClick(id)}>
@@ -60,34 +113,33 @@ function TransactionRow({ transaction, handleClick, handleDelete }) {
 
 
 
-
-
 function RecurringTransactionsCard({ potId, handleItemClick, handleNewTransactionClick }) {
     const token = useSelector(state => state.user.userData.token)
-    const api = useApi(token)
     const [transactionArr, setTransactionArr] = useState([])
-    // const [sortId, setSortId] = useState(1)
+    const [sortId, setSortId] = useState(1)
 
     const sortButtonItems = [
-        { id: 1, text: "All" },
-        { id: 2, text: "Income" },
-        { id: 3, text: "Expense" },
+        { id: 1, text: "All", kind: "all" },
+        { id: 2, text: "Income", kind: "inflow" },
+        { id: 3, text: "Expense", kind: "outflow" },
     ]
 
     useEffect(() => {
-        api.getRecurringTransactionsByPot(potId, 'All').then(response => {
+        const api = getApi(token)
+        const sort = sortButtonItems.find(s => s.id ===sortId)
+        api.getRecurringTransactionsByPot(potId, sort.kind).then(response => {
             if (response.status === api.SUCCESS) {
                 setTransactionArr(response.data)
             } else {
                 alert("Error fetching recent transactions")
             }
         })
-    }, [])
+    }, [token, potId, sortId])
 
     const onSortIdSelected = id => {
-        // setSortId(id)
-        console.log(id)
+        setSortId(id)
     }
+
 
     return (
         <div className="recurring-trans-container">
@@ -117,4 +169,4 @@ function RecurringTransactionsCard({ potId, handleItemClick, handleNewTransactio
     )
 }
 
-export { RecurringTransactionsCard, TransactionRow }
+export { RecurringTransactionsCard, TransactionRow, RecordRow }
