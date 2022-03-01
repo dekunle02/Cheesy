@@ -181,6 +181,7 @@ class PotViewSet(viewsets.ModelViewSet):
             return Response(data={"message": "Error: Pot already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            print("potData:", request.user, name, amount, currency, color_code)
             pot: Pot = Pot.objects.create(
                 user=request.user,
                 name=name,

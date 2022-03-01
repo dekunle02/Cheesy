@@ -36,6 +36,11 @@ function NetworthCard() {
         api.getAllCurrencies().then(response => {
             if (response.status === api.SUCCESS) {
                 setCurrencyArr(response.data)
+                if (user.default_currency) {
+                    setCurrencyId(user.default_currency)
+                } else{
+                    setCurrencyId(response.data[0].id)
+                }
             } else {
                 alert("Error fetching currencies...")
             }

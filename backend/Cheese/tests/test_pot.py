@@ -225,7 +225,7 @@ class RecordTestCase(TestCase):
         )
         Transaction.treat_list([transaction0, transaction1, transaction2, transaction3])
         result = Record.fetch_pot_total_from(pot, five_months_ago.date(), Transaction.Period.MONTH)
-        expected_list_amounts = [110, 110, 110, 110, 150, 200]
+        expected_list_amounts = [Decimal(110), Decimal(110), Decimal(110), Decimal(110), Decimal(150), Decimal(200)]
 
         self.assertEquals(result['amounts'], expected_list_amounts)
     
